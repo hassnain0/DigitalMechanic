@@ -1,0 +1,36 @@
+{
+  "name": "digitalmechanic",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@react-native-community/netinfo": "9.3.7",
+    "@react-native-picker/picker": "2.4.8",
+    "@react-navigation/drawer": "^6.6.3",
+    "@react-navigation/native": "^6.1.7",
+    "@react-navigation/native-stack": "^6.9.13",
+    "expo": "~48.0.18",
+    "expo-linear-gradient": "~12.1.2",
+    "expo-status-bar": "~1.4.4",
+    "firebase": "^10.1.0",
+    "lottie-react-native": "5.1.4",
+    "react": "18.2.0",
+    "react-native": "0.71.8",
+    "react-native-linear-gradient": "^2.7.3",
+    "react-native-maps": "^1.7.1",
+    "react-native-paper": "^5.9.1",
+    "react-native-reanimated": "^2.14.4",
+    "react-native-toast-message": "^2.1.6",
+    "react-native-vector-icons": "^10.0.0",
+    "react-redux": "^8.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
+}
