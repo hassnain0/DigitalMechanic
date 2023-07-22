@@ -26,15 +26,15 @@ export default function App() {
           }, headerTitleStyle: {
             fontWeight: '600',fontSize:20 ,// Optionally customize the header title's style
           },
-          
-           
       })}/>
           <Stack.Screen name='HomeAdmin' component={HomeAdmin} options={( ) => ({headerBackVisible:false,title:'Home',headerTitleAlign:'center',statusBarColor:'#49B3AA'
            
-      })}/><Stack.Screen name='HomeMechanic' component={HomeMechanic} options={( ) => ({headerBackVisible:false,title:'Home',headerTitleAlign:'center',statusBarColor:'#49B3AA'
-           
+      })}/><Stack.Screen name='HomeMechanic' component={HomeMechanic} options={( ) => ({headerBackVisible:false,title:'Home',headerTitleAlign:'center',statusBarColor:'#49B3AA'           
 })}/> 
-<Stack.Screen name='Locations' component={Locations} options={( ) => ({headerBackVisible:false,title:'Nearby Locations',headerTitleAlign:'center',statusBarColor:'#49B3AA'
+<Stack.Screen name='Locations' component={Locations} options={() => ({title:'Nearby Locations',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerStyle: {
+          backgroundColor: '#3A0A6A', // Set your desired header color
+        },
+        headerTintColor:'white'
            
       })}/> 
     <Stack.Screen name='Login' component={Login} options={{headerShown:false,statusBarColor:'#3A0A6A'}}/>

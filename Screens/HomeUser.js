@@ -1,10 +1,10 @@
 import React, { useState,useEffect } from 'react'
-import {Image, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView} from 'react-native'
+import {Image, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler} from 'react-native'
 import {  Metrics } from '../themes'
 import CustomDialog from './CustomDialog';
 import {  db } from './Firebase';
-import Login from './Login';
 import Locations from './Locations';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const HomeUser=({navigation})=>{
@@ -15,6 +15,32 @@ const HomeUser=({navigation})=>{
     
        ]; // Add other services as needed
   
+       useFocusEffect(
+        React.useCallback(() => {
+          const onBackPress = () => {
+            Alert.alert(
+              'Exit App',
+              'Are you sure you want to exit?',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel'
+                },
+                {
+                  text: 'Exit',
+                  onPress: () => BackHandler.exitApp()
+                }
+              ],
+              { cancelable: false }
+            );
+            return true;
+          };
+          BackHandler.addEventListener('hardwareBackPress', onBackPress);
+          return () =>
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [])
+      );
     const handleCloseDialog = () => {
       setDialogVisible(false);
     };
