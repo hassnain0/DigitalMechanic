@@ -11,6 +11,7 @@ import DrawerNavigator from './DrawerNavigator';
 import Locations from './Screens/Locations';
 import CheckHistory from './Screens/CheckHistory';
 import Request from './Screens/Requests';
+import Rating from './Screens/Rating';
 
 const Stack=createNativeStackNavigator();
 
@@ -42,6 +43,8 @@ export default function App() {
         },           
 })}/> 
 <Stack.Screen name='Request' component={Request} options={( ) => ({headerTintColor:'black',title:'List Request',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
+})}/> 
+<Stack.Screen name='Rating' component={Rating} options={( ) => ({headerTintColor:'black',title:'Rating List',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
 })}/> 
 <Stack.Screen name='Locations' component={Locations} options={() => ({title:'Nearby Locations',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerStyle: {
           backgroundColor: '#3A0A6A', // Set your desired header color

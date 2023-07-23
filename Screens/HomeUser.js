@@ -24,8 +24,11 @@ const HomeUser=({navigation})=>{
        }
       
 
-       const handleConfirm=()=>{
-
+       const handleConfirm=async()=>{
+            await db.collection("Feedback").add({
+              Email:"Hassnain",
+              Feedback:inputText,
+            })
        }
        useFocusEffect(
         React.useCallback(() => {
@@ -69,9 +72,7 @@ navigation.navigate('CheckHistory')
     const RateFeedback=()=>{
       setShowInput(true)
     }
-    const PayforService=()=>{
-
-    }
+    
     const handleServiceSelect = (selected) => {
        if(selected.length==0){
        

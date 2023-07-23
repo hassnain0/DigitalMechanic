@@ -42,14 +42,14 @@ const checkUser=async(email)=>{
         if (doc.exists) {
        
           if(value=='Admin'){
-          return "Admin";
+          return value;
           }
           else if(value=='User'){
         
-            return "User";
+            return value;
           }
           else if(value=='Mechanic'){
-            return "Mechanic";
+            return value;
           }
           else{
             return false
@@ -66,25 +66,27 @@ const checkUser=async(email)=>{
     
     onAuthStateChanged(auth, (user) => {  
     
-      if (user) {          
-         
-        const Identity=checkUser(user.email);
-        console.log("Identity",Identity)
-        if(Identity){
-        if(Identity=='Admin'){
-          navigation.replace("HomeAdmin")
-        }
-        else if(Identity=='User'){
-          navigation.replace("HomeUser");
-        }
-        else if(Identity=='Mechanic'){
-          navigation.replace("HomeMechanic");
-        }
-        
-
-        }
-  }
-  
+      if (user) {
+        checkUser(user.email) // The function returns a promise.
+          .then((Identity) => {
+            console.log("Identity", Identity);
+    
+            if (Identity) {
+              if (Identity === "Admin") {
+                navigation.replace("HomeAdmin");
+              } else if (Identity === "User") {
+                navigation.replace("HomeUser");
+              } else if (Identity === "Mechanic") {
+                navigation.replace("HomeMechanic");
+              }
+            } else {
+              console.log("Identity not found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching identity:", error);
+          });
+      }
  });
   })
   useFocusEffect(
@@ -132,8 +134,23 @@ const checkUser=async(email)=>{
     try {
       
      await signInWithEmailAndPassword(auth,state.email,state.password).then(()=>{
-        setLoader(false)
-        navigation.navigate("HomeMechanic");
+        
+      checkUser(user.email) // The function returns a promise.
+      .then((Identity) => {
+        console.log("Identity", Identity);
+
+        if (Identity) {
+          if (Identity === "Admin") {
+            navigation.navigate("HomeAdmin");
+          } else if (Identity === "User") {
+            navigation.navigate("HomeUser");
+          } else if (Identity === "Mechanic") {
+            navigation.navigate("HomeMechanic");
+          }
+        } else {
+          console.log("Identity not found.");
+        }
+      })
      }).catch(error=>{
         setLoader(false)
         if(error.code=='auth/too-many-request'){
