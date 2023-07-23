@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react'
-import {Image, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler} from 'react-native'
+import {Image,TextInput, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler,Modal} from 'react-native'
 import {  Metrics } from '../themes'
 import CustomDialog from './CustomDialog';
 import {  db } from './Firebase';
@@ -11,10 +11,22 @@ const HomeUser=({navigation})=>{
 
     const [selectedServices, setSelectedServices] = useState(null);
     const [isDialogVisible, setDialogVisible] = useState(false);
-    const services = ['Oil Change', 'Brake Inspection', 'Tire Rotation', 'Wheel Alignment','Battery Check','Air Filter Replacement','Cabin Air Filter Replacement','Transmission Service','Coolant Flush','Spark Plug Replacement','Timing Belt Replacement','Suspension Inspection','Fuel System Cleaning','Exhaust System Check','Radiator Check'
+    const services = ['Oil Change', 'Brake Inspection', 'Flat tyre', 'Wheel Alignment','Battery Check','Air Filter Replacement','Cabin Air Filter Replacement','Transmission Service','Coolant Flush','Spark Plug Replacement','Timing Belt Replacement','Suspension Inspection','Fuel System Cleaning','Exhaust System Check','Radiator Check'
     
        ]; // Add other services as needed
-  
+ 
+       const [inputText, setInputText] = useState();
+
+       const [showInput,setShowInput]=useState(false); 
+       
+       const handleCancel = () => {
+        setShowInput(false)
+       }
+      
+
+       const handleConfirm=()=>{
+
+       }
        useFocusEffect(
         React.useCallback(() => {
           const onBackPress = () => {
@@ -48,26 +60,28 @@ const HomeUser=({navigation})=>{
         setDialogVisible(true);     
     }
     const CheckHistory=()=>{
-
+navigation.navigate('CheckHistory')
     }
+
     const Cancel=()=>{
 
     }
     const RateFeedback=()=>{
-
+      setShowInput(true)
     }
     const PayforService=()=>{
 
     }
     const handleServiceSelect = (selected) => {
        if(selected.length==0){
-        console.log("Hello")
+       
        }
         setSelectedServices(selected);
 
         try{
             db.collection("RequestService").add({
                 Service:selectedServices,
+                Status:"Pending",
             }).then(()=>
             setDialogVisible(false),
             navigation.navigate("Locations")  )      }
@@ -126,7 +140,26 @@ const HomeUser=({navigation})=>{
          <Text style={{ fontSize: 20, borderColor:'#002F46',alignItems: 'center',marginLeft:100,marginRight:100, color: 'white' ,marginBottom:2}}>RateandFeedback</Text>  
       </TouchableOpacity>                
 </View> 
+   <Modal visible={showInput}  >
+        <View style={styles.modalContainer}>
 
+          <TextInput
+
+            style={styles.input}
+            onChangeText={text => setInputText(text)}
+            value={inputText}
+            placeholder='Enter your feedback here'
+          />
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity onPress={handleCancel}>
+              <Text style={styles.modalButton}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleConfirm}>
+              <Text style={styles.modalButton}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
         </View>
        
         </ScrollView>
@@ -164,6 +197,21 @@ TouchContainer2:{
   justifyContent:'center',
   marginTop:16,
   borderColor:'white',
+}, modalContainer: {
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+modalButtonContainer: {
+  flexDirection: 'row',
+  marginTop: 10,
+},
+modalButton: {
+  marginHorizontal: 10,
+  paddingVertical: 5,
+  paddingHorizontal: 10,
+  backgroundColor: 'gray',
+  color: 'white',
 },
 MapContainer:{
     
@@ -205,6 +253,15 @@ MapContainer:{
         justifyContent:'center',
         marginTop:16,
         borderColor:'white',
+      },
+      input: {
+        color: 'grey',
+        height: 30,
+        width: 200,
+        borderWidth: 1,
+        borderColor: 'gray',
+        paddingHorizontal: 5,
+        textAlign: 'center',
       },
 });
 

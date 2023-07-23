@@ -9,11 +9,14 @@ import Button from '../components/Button';
 import Toast from 'react-native-toast-message';
 import util from '../helpers/util';
 import { signInWithEmailAndPassword,onAuthStateChanged } from "@firebase/auth";
-import { auth } from "./Firebase";
+import { auth, db } from "./Firebase";
 import HomeUser from "./HomeUser";
-
+import HomeAdmin from './HomeAdmin';
+import firebase from 'firebase/compat'
+import HomeMechanic from "./HomeAdmin";
 const   Login=({navigation}) =>{
-const [state, setState] = React.useState({email: '', password: ''});
+
+  const [state, setState] = React.useState({email: '', password: ''});
   const [loader, setLoader] = React.useState(false);
   const _handleTextChange = (name, val) => {
     setState({
@@ -23,10 +26,63 @@ const [state, setState] = React.useState({email: '', password: ''});
   };
 
   
+const checkUser=async(email)=>{
+  try {
+    const mechanicsCollection = db.collection('Registration');
+    const querySnapshot = await mechanicsCollection.where('Email', '==', email).get();
+
+  // Check if there's a matching document
+  if (!querySnapshot.empty) {
+    // Assuming there's only one matching document
+    const doc = querySnapshot.docs[0];
+
+    // Access the "Identity" field from the document data
+    const value = doc.data().Identity;
+    console.log(value);
+        if (doc.exists) {
+       
+          if(value=='Admin'){
+          return "Admin";
+          }
+          else if(value=='User'){
+        
+            return "User";
+          }
+          else if(value=='Mechanic'){
+            return "Mechanic";
+          }
+          else{
+            return false
+          }
+    }
+  };
+
+  } catch (error) {
+    console.error('Error fetching identity:', error);
+    return null; // Return null in case of an error.
+  }
+}
   useEffect(()=>{
+    
     onAuthStateChanged(auth, (user) => {  
+    
       if (user) {          
-            navigation.replace("HomeUser")
+         
+        const Identity=checkUser(user.email);
+        console.log("Identity",Identity)
+        if(Identity){
+        if(Identity=='Admin'){
+          navigation.replace("HomeAdmin")
+        }
+        else if(Identity=='User'){
+          navigation.replace("HomeUser");
+        }
+        else if(Identity=='Mechanic'){
+          navigation.replace("HomeMechanic");
+        }
+        
+
+        }
   }
   
  });
@@ -77,7 +133,7 @@ const [state, setState] = React.useState({email: '', password: ''});
       
      await signInWithEmailAndPassword(auth,state.email,state.password).then(()=>{
         setLoader(false)
-        navigation.navigate("HomeUser");
+        navigation.navigate("HomeMechanic");
      }).catch(error=>{
         setLoader(false)
         if(error.code=='auth/too-many-request'){
