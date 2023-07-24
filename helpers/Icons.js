@@ -11,7 +11,6 @@ import FeatherI from 'react-native-vector-icons/Feather'
 import EntypoI from 'react-native-vector-icons/Entypo'
 import ZocialI from 'react-native-vector-icons/Zocial'
 import AntDesignI from 'react-native-vector-icons/AntDesign'
-
 import React from 'react'
 
 export const MaterialCommunityIcons = props => (

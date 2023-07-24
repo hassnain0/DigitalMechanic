@@ -1,9 +1,8 @@
 import React ,{useEffect} from 'react';
-import {Image,StyleSheet, View ,Text} from 'react-native';
+import {StyleSheet,ImageBackground} from 'react-native';
 import Login from './Login';
-import AnimatedLottieView from 'lottie-react-native';
 
-const  SplashScreen = ({ navigation }) => {
+const  SplashScreen = ({navigation}) => {
 
   useEffect(() => {
    setTimeout(() => {
@@ -14,24 +13,14 @@ const  SplashScreen = ({ navigation }) => {
     };
   }, []);
   return (
-    <View style={styles.container}>
-  <View style={{alignSelf:'center',alignContent:'center',paddingBottom:1}}>
-        <AnimatedLottieView source={require('../assets/animation.json')} autoSize={true} autoPlay={true} style={styles.image} />
-<Text style={{textAlign:'right',fontSize:30}}>Your Road Our Expertise</Text>
-
-        </View>
-    </View>
+    <ImageBackground  style={styles.image} source={require("../assets/Final.jpeg")}></ImageBackground>
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   image: {
-    width: 100,
-    height: 300,
+    width: 390,
+    height:800,
   },
 });
 

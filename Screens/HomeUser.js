@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react'
-import {Image,TextInput, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler,Modal} from 'react-native'
+import {Image,TextInput, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler,Modal, ImageBackground} from 'react-native'
 import {  Metrics } from '../themes'
 import CustomDialog from './CustomDialog';
 import {  db } from './Firebase';
@@ -23,12 +23,20 @@ const HomeUser=({navigation})=>{
         setShowInput(false)
        }
       
-
        const handleConfirm=async()=>{
-            await db.collection("Feedback").add({
-              Email:"Hassnain",
+        try{    
+          const myDate=new Date().toLocaleDateString;
+        await db.collection("Feedback").add({
+              date:myDate,
               Feedback:inputText,
+            }).then(()=>{
+
             })
+            }
+          
+          catch(error){
+            console.log(error)
+          }
        }
        useFocusEffect(
         React.useCallback(() => {
@@ -92,60 +100,74 @@ navigation.navigate('CheckHistory')
       };
      
     return(
-        <ScrollView>
-        <View style={styles.ViewContainer}>
+        
+        
 
-<View style={styles.CardContainer}>
+<ImageBackground source={require("../assets/ImageBackground.jpeg")} style={styles.ViewContainer}>
 <CustomDialog
         visible={isDialogVisible}
         onClose={handleCloseDialog}
         services={services}
         onServiceSelect={handleServiceSelect}
       />
-  <TouchableOpacity
-      onPress={RequestMethod}
-        style={[
-          styles.TouchContainer2,
-         
-        ]}
-       
-       
-      >
-         <Text style={{ fontSize: 20, borderColor:'#002F46',alignItems: 'center',marginLeft:100,marginRight:100, color: 'white' ,marginBottom:2,textAlign:'center'}}>Request for Service</Text>  
-      </TouchableOpacity>
-      <TouchableOpacity
-      onPress={Cancel}
-        style={[
-          styles.TouchContainer2,
-         
-        ]}
-      >
-         <Text style={{ fontSize: 20, borderColor:'#002F46',alignItems: 'center',marginLeft:100,marginRight:100, color: 'white' ,marginBottom:2,textAlign:'center'}} >  Cancel Request  </Text>  
-      </TouchableOpacity>
-      <TouchableOpacity
-      onPress={CheckHistory}
-        style={[
-          styles.TouchContainer2,
+    <View style={styles.rowContainer}>
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require("../assets/Mechanic.png")}
+                    style={styles.cardImage}
+                  />
+                  <TouchableOpacity
+                    onPress={RequestMethod}
+                    style={[styles.touchContainer]}
+                  >
+                    <Text style={styles.buttonText}>Provide Services</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require("../assets/Mechanic.png")}
+                    style={styles.cardImage}
+                  />
+                  <TouchableOpacity
+                    onPress={Cancel}
+                    style={[styles.touchContainer]}
+                  >
+                    <Text style={styles.buttonText}>Profile Management</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+        
+              <View style={styles.rowContainer}>
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require("../assets/Mechanic.png")}
+                    style={styles.cardImage}
+                  />
+                  <TouchableOpacity
+                    onPress={RequestMethod}
+                    style={[styles.touchContainer]}
+                  >
+                    <Text style={styles.buttonText}>Check for Services</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require("../assets/Mechanic.png")}
+                    style={styles.cardImage}
+                  />
+                  <TouchableOpacity
+                    onPress={RateFeedback}
+                    style={[styles.touchContainer]}
+                  >
+                    <Text style={styles.buttonText}>Service Rating and Feedback</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>               
 
-        ]}
-      >
-         <Text style={{ fontSize: 20, borderColor:'#002F46',alignItems: 'center',marginLeft:100,marginRight:100, color: 'white' ,marginBottom:2}}>    CheckHistory    </Text>  
-      </TouchableOpacity>
-      <TouchableOpacity
-      onPress={RateFeedback}
-        style={[
-          styles.TouchContainer2,
-         
-        ]}
-      >
-         <Text style={{ fontSize: 20, borderColor:'#002F46',alignItems: 'center',marginLeft:100,marginRight:100, color: 'white' ,marginBottom:2}}>RateandFeedback</Text>  
-      </TouchableOpacity>                
-</View> 
    <Modal visible={showInput}  >
         <View style={styles.modalContainer}>
 
           <TextInput
-
             style={styles.input}
             onChangeText={text => setInputText(text)}
             value={inputText}
@@ -161,10 +183,7 @@ navigation.navigate('CheckHistory')
           </View>
         </View>
       </Modal>
-        </View>
-       
-        </ScrollView>
-      
+       </ImageBackground>
     )
 };
 
@@ -174,7 +193,8 @@ ViewContainer:{
 marginTop:Metrics.ratio(80),
 flexDirection:'column',
 flex:1,
-
+width:400,
+height:600,
 },
 
 ImageBackgroundcontainer: {
@@ -226,6 +246,50 @@ MapContainer:{
         
     
         
+      },  container: {
+        flex: 1,
+        backgroundColor: "#f0f0f0",
+        padding: 10,
+      },
+      rowContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 50,
+        
+        margin:20,
+      },
+      cardContainer: {
+        flex: 1,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+      },
+      cardImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        alignSelf: "center",
+        marginBottom: 20,
+      },
+      touchContainer: {
+        backgroundColor: "#3A0A6A",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        marginBottom: 10,
+      },
+      buttonText: {
+        fontSize: 20,
+        color: "white",
+        textAlign: "center",
       },
 
       ImageContainer:{

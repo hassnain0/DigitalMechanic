@@ -12,6 +12,7 @@ import Locations from './Screens/Locations';
 import CheckHistory from './Screens/CheckHistory';
 import Request from './Screens/Requests';
 import Rating from './Screens/Rating';
+import Settings from './Screens/Settings';
 
 const Stack=createNativeStackNavigator();
 
@@ -47,6 +48,12 @@ export default function App() {
 <Stack.Screen name='Rating' component={Rating} options={( ) => ({headerTintColor:'black',title:'Rating List',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
 })}/> 
 <Stack.Screen name='Locations' component={Locations} options={() => ({title:'Nearby Locations',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerStyle: {
+          backgroundColor: '#3A0A6A', // Set your desired header color
+        },
+        headerTintColor:'white'
+           
+      })}/>
+      <Stack.Screen name='Settings' component={Settings} options={() => ({title:'Profile Management',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerStyle: {
           backgroundColor: '#3A0A6A', // Set your desired header color
         },
         headerTintColor:'white'

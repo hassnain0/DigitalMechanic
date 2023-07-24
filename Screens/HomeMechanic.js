@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import {Alert, BackHandler, StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
+import {Alert,ImageBackground, BackHandler, StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
 import { Button } from 'react-native-elements';
 import { Metrics } from '../themes';
 import { useFocusEffect } from '@react-navigation/native';
 import Request from './Requests';
 import Rating from './Rating';
+import Settings from './Settings';
 
 const HomeMechanic=({navigation})=>{
     useFocusEffect(
@@ -41,6 +42,9 @@ const HomeMechanic=({navigation})=>{
     navigation.navigate('CheckHistory')
     }
 
+    const Management=()=>{
+navigation.navigate("Settings")
+    }
     const RateFeedback=()=>{
     navigation.navigate("Rating")
     }
@@ -50,7 +54,7 @@ const HomeMechanic=({navigation})=>{
        
     return(
       
-            <View style={styles.container}>
+            <ImageBackground source={require("../assets/ImageBackground.jpeg")} style={styles.container}>
               <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
@@ -70,7 +74,7 @@ const HomeMechanic=({navigation})=>{
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
-                    onPress={Cancel}
+                    onPress={Management}
                     style={[styles.touchContainer]}
                   >
                     <Text style={styles.buttonText}>Profile Management</Text>
@@ -104,7 +108,7 @@ const HomeMechanic=({navigation})=>{
                   </TouchableOpacity>
                 </View>
               </View>
-            </View>
+            </ImageBackground>
           );
         };
         
@@ -143,6 +147,7 @@ const HomeMechanic=({navigation})=>{
             marginBottom: 20,
           },
           touchContainer: {
+            alignItems:'center',
             backgroundColor: "#3A0A6A",
             paddingVertical: 10,
             paddingHorizontal: 20,
@@ -150,6 +155,7 @@ const HomeMechanic=({navigation})=>{
             marginBottom: 10,
           },
           buttonText: {
+            
             fontSize: 20,
             color: "white",
             textAlign: "center",

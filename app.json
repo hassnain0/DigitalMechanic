@@ -4,10 +4,10 @@
     "slug": "DigitalMechanic",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Mechanic.png",
+    "icon": "./assets/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/SplashScreen.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { db } from "./Firebase";
+import { db, firebase } from "./Firebase";
 
 
 const Rating = () => {
@@ -10,8 +10,9 @@ const Rating = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const email=firebase.auth().currentUser.email;
         const querySnapshot = await db
-          .collection("WorkDone")
+          .collection("WorkDone").where("email",'==',email)
           .where("Status", "==", "Done")
           .get();
 
