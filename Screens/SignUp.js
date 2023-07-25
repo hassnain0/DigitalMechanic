@@ -29,7 +29,6 @@ const SignUp=({navigation})=> {
     name: '',
     phone: '',
    phone2:'',
-    
     password: '',
     vehicle: '',
   });
@@ -169,6 +168,7 @@ const SignUp=({navigation})=> {
     
        })
    }
+   resetForm();
    util.successMsg("Sucessfully Registered")
   };
 
@@ -298,7 +298,7 @@ const SignUp=({navigation})=> {
                 }
                 onChangeText={t => _handleTextChange('shop', t)}
                 value={state.shop}
-                label={"Shop Details"}
+                label={"Specialities"}
                 placeholder=""
                 // keyboardType="name-phone-pad"
                 autoCapitalize={'none'}

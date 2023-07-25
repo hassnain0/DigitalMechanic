@@ -11,6 +11,7 @@ import FeatherI from 'react-native-vector-icons/Feather'
 import EntypoI from 'react-native-vector-icons/Entypo'
 import ZocialI from 'react-native-vector-icons/Zocial'
 import AntDesignI from 'react-native-vector-icons/AntDesign'
+import ShoppingCartI from 'react-native-vector-icons/FontAwesome'
 import React from 'react'
 
 export const MaterialCommunityIcons = props => (
@@ -28,6 +29,7 @@ const Feather = props => <FeatherI {...props} />
 const Entypo = props => <EntypoI {...props} />
 const Zocial = props => <ZocialI {...props} />
 const AntDesign = props => <AntDesignI {...props} />
+const ShoppingCart = props => <ShoppingCartI {...props} />
 
 export default {
     MaterialCommunityIcons,

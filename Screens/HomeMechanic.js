@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Request from './Requests';
 import Rating from './Rating';
 import Settings from './Settings';
-
+import {firebase} from './Firebase';
 const HomeMechanic=({navigation})=>{
     useFocusEffect(
         React.useCallback(() => {
@@ -48,8 +48,8 @@ navigation.navigate("Settings")
     const RateFeedback=()=>{
     navigation.navigate("Rating")
     }
-    const PayforService=()=>{
-
+    const ProvideService=()=>{
+      navigation.navigate("ProvideService")
     }
        
     return(
@@ -58,11 +58,11 @@ navigation.navigate("Settings")
               <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Button.png")}
+                    source={require("../assets/Car.png")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
-                    onPress={RequestMethod}
+                    onPress={ProvideService}
                     style={[styles.touchContainer]}
                   >
                     <Text style={styles.buttonText}>Provide Services</Text>
@@ -85,7 +85,7 @@ navigation.navigate("Settings")
               <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Request.png")}
+                    source={require("../assets/Service.jpg")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
@@ -97,7 +97,7 @@ navigation.navigate("Settings")
                 </View>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Rating.png")}
+                    source={require("../assets/Start.jpg")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
@@ -119,11 +119,12 @@ navigation.navigate("Settings")
             padding: 10,
           },
           rowContainer: {
+            marginTop: 40,
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "space-between", // Adjust spacing between cards horizontally
+            marginVertical: 10,
             marginBottom: 50,
-            
-            margin:20,
+            marginHorizontal: 10, // Add gap between individual cards of each row
           },
           cardContainer: {
             flex: 1,
@@ -137,7 +138,8 @@ navigation.navigate("Settings")
             },
             shadowOpacity: 0.1,
             shadowRadius: 4,
-            elevation: 2,
+            elevation: 3,
+            marginRight: 10, // Add space between cards within a row
           },
           cardImage: {
             width: 100,
@@ -147,7 +149,7 @@ navigation.navigate("Settings")
             marginBottom: 20,
           },
           touchContainer: {
-            alignItems:'center',
+            alignItems: "center",
             backgroundColor: "#3A0A6A",
             paddingVertical: 10,
             paddingHorizontal: 20,
@@ -155,8 +157,8 @@ navigation.navigate("Settings")
             marginBottom: 10,
           },
           buttonText: {
-            
-            fontSize: 20,
+            fontWeight: '300',
+            fontSize: 13,
             color: "white",
             textAlign: "center",
           },

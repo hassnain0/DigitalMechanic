@@ -58,7 +58,7 @@ navigation.navigate('CheckHistory')
               <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Mechanic.png")}
+                    source={require("../assets/User.png")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
@@ -70,7 +70,7 @@ navigation.navigate('CheckHistory')
                 </View>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Mechanic.png")}
+                    source={require("../assets/User.png")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
@@ -85,7 +85,7 @@ navigation.navigate('CheckHistory')
               <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Mechanic.png")}
+                    source={require("../assets/User.png")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
@@ -97,7 +97,7 @@ navigation.navigate('CheckHistory')
                 </View>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/Mechanic.png")}
+                    source={require("../assets/User.png")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
