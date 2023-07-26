@@ -11,7 +11,7 @@ const CheckHistory = () => {
     const fetchData = async () => {
       try {
         const querySnapshot = await db
-          .collection("WorkDone")
+          .collection("RequestService")
           .where("Status", "==", "Done")
           .get();
 

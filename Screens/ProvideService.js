@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { db, firebase } from "./Firebase";
+import { db, } from "./Firebase";
 
-const ProvideService = () => {
+const ProvideService= () => {
   const [loading, setLoading] = useState(true);
   const [specialties, setSpecialties] = useState([]);
 
   useEffect(() => {
-    // Initialize Firebase (you need to replace this config with your Firebase project configuration)
     const fetchData = async () => {
       try {
-        const userEmail = firebase.auth().currentUser.email;
+
+       
         const querySnapshot = await db
           .collection("Registration")
-          .where("Email", "==", userEmail)
           .get();
 
+          console.log(querySnapshot)
         if (!querySnapshot.empty) {
           const specialtiesData = querySnapshot.docs.map((doc) => doc.data().ShopDetails);
           console.log("specialtiesData", specialtiesData);

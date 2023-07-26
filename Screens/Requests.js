@@ -11,7 +11,7 @@ const Request=() => {
     const fetchData = async () => {
       try {
         const querySnapshot = await db
-          .collection("Request Service")
+          .collection("RequestService")
           .where("Status", "==", "Pending")
           .get();
 
@@ -37,9 +37,7 @@ const Request=() => {
   // Render each item in the history list
   const renderHistoryItem = ({ item }) => (
     <View style={styles.historyItem}>
-      <Text style={styles.date}>{item.Name}</Text>
-      <Text style={styles.work}>{item.Date}</Text>
-      <Text style={styles.work}>{item.Address}</Text>
+      <Text style={styles.work}>{item.myDate}</Text>
       <Text style={styles.work}>{item.Service}</Text>
     </View>
   );

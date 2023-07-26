@@ -11,13 +11,10 @@ const Locations=()=>{
    const markerRef=useRef(null);
  
    
-const [showInput,setShowInput]=useState(false); 
    //Map Dimensions
 
    //Tracking method
-   const MarkerPressed=()=>{
-    setMarkerShown(true)
-   }
+  
    const mechanicsData = [];
    const [markerShown,setMarkerShown]=useState(false)
    const screen=Dimensions.get('window')
@@ -107,61 +104,53 @@ const renderMechanicItem = ({ item }) => {
       Linking.openURL(`tel:${item.phoneNumber}`);
     }
   };
-
-  return (
-    <View style={styles.mechanicDetails}>
-      <Text style={styles.mechanicName}>{item.Name}</Text>
-      <TouchableOpacity onPress={handleCallPress}>
-        <Text style={styles.mechanicPhoneNumber}>{item.Phone2}</Text>
-      </TouchableOpacity>
-      <Text style={styles.mechanicEmail}>{item.Email}</Text>
-      <Text style={styles.mechanicShopDetails}>{item.ShopDetails}</Text>
-    </View>
-  
-  );
+}
+    
+const MarkerPressed = () => {
+  db.collection("RequestService").add
+  setMarkerShown(!markerShown);
 };
-
-
-    return(
-        <View style={styles.container}>
-     <MapView
+  return (
+    <View style={styles.container}>
+      <MapView
         ref={mapRef}
-       maxZoomLevel={18}
+        maxZoomLevel={18}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         showsIndoors={true}
-        initialRegion={{ latitude: 24.9157 , longitude:67.0921, latitudeDelta:LATITUDE_DELTA, longitudeDelta:LONGITUDE_DELTA  }}
-      > 
-        <Marker  draggable={true}
-
-ref={markerRef}
-   
-  title="Nearby Mechanic"
-  coordinate={currlocation1}
-  image={ImagePath.Engineer}
-  onPress={MarkerPressed}
-/>
-</MapView>
- {markerShown && ( <View style={styles.BottomCard}>
-<View style={{
-  position: 'absolute',
-  bottom: 0,
-paddingBottom: 80,
-left:40,  
-  backgroundColor:'white'
-}}><FlatList
-              style={{ flex: 1 }} // Set the FlatList to take all available space
-              contentContainerStyle={styles.flatListContent} // Use contentContainerStyle for inner content
+        initialRegion={{
+          latitude: 24.9157,
+          longitude: 67.0921,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        }}
+      >
+        <Marker
+          draggable={true}
+          ref={markerRef}
+          title="Nearby Mechanic"
+          coordinate={currlocation1}
+          image={ImagePath.Engineer}
+          onPress={MarkerPressed}
+        />
+      </MapView>
+      {markerShown && (
+        <View style={styles.BottomCard}>
+          <View style={{ position: 'absolute', bottom: 0, paddingBottom: 80, left: 40, backgroundColor: 'white' }}>
+            <FlatList
+              style={{ flex: 1 }}
+              contentContainerStyle={styles.flatListContent}
               data={mechanicsData}
               renderItem={renderMechanicItem}
               keyExtractor={(item) => item.CNIC.toString()}
-            />  
-            <Text>Hell</Text>
-</View>
-</View>)}
-      </View>
-    )
-}
+            />
+            <Text>InProgress</Text>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
 const styles=StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,

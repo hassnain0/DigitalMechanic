@@ -10,9 +10,9 @@ const Rating = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const email=firebase.auth().currentUser.email;
+      
         const querySnapshot = await db
-          .collection("WorkDone").where("email",'==',email)
+          .collection("RequestService")
           .where("Status", "==", "Done")
           .get();
 
@@ -38,8 +38,8 @@ const Rating = () => {
   // Render each item in the history list
   const renderHistoryItem = ({ item }) => (
     <View style={styles.historyItem}>
-      <Text style={styles.date}>{item.date}</Text>
-      <Text style={styles.work}>{item.work}</Text>
+      <Text style={styles.date}>{item.Service}</Text>
+      <Text style={styles.work}>{item.Status}</Text>
     </View>
   );
 
@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
   },
   work: {
     fontSize: 16,
-    color: "#333",
+    color: "green",
+    
   },
 });
 

@@ -1,5 +1,5 @@
-import { useFocusEffect, useRoute } from "@react-navigation/native"
-import { BackHandler, Platform, StyleSheet } from "react-native";
+import { useFocusEffect } from "@react-navigation/native"
+import { BackHandler, StyleSheet } from "react-native";
 import { Colors, Metrics } from '../themes';
 import  React, { useEffect } from 'react';
 import {View, Text, SafeAreaView, TouchableOpacity, Image,Alert} from 'react-native';
@@ -9,16 +9,19 @@ import Button from '../components/Button';
 import Toast from 'react-native-toast-message';
 import util from '../helpers/util';
 import { signInWithEmailAndPassword,onAuthStateChanged } from "@firebase/auth";
-import { auth, db } from "./Firebase";
+import { auth, db ,firebase} from "./Firebase";
 import HomeUser from "./HomeUser";
 import HomeAdmin from './HomeAdmin';
-import firebase from 'firebase/compat'
 import HomeMechanic from "./HomeAdmin";
+import SignUpMechanic from "./SignUpMechanic";
+import SignUpUser from "./SingUpUser";
+import NetInfo from '@react-native-community/netinfo'
+import { useState } from "react";
 
 const   Login=({navigation}) =>{
 
-  const [state, setState] = React.useState({email: '', password: ''});
   const [loader, setLoader] = React.useState(false);
+  const [state, setState] = React.useState({email: '', password: ''});
   const _handleTextChange = (name, val) => {
     setState({
       ...state,
@@ -26,7 +29,20 @@ const   Login=({navigation}) =>{
     });
   };
 
+const [isConnected,setIsConnected]=useState(true)
+                   
+ 
+React.useEffect(()=>{
   
+  const unsubscribe=NetInfo.addEventListener(state=>{
+  setIsConnected(state.isConnected);
+  })
+  return ()=>{
+    unsubscribe();
+  }
+}) 
+
+
 const checkUser=async(email)=>{
   try {
     const mechanicsCollection = db.collection('Registration');
@@ -39,13 +55,14 @@ const checkUser=async(email)=>{
 
     // Access the "Identity" field from the document data
     const value = doc.data().Identity;
+    const status=doc.data().Status;
     console.log(value);
         if (doc.exists) {
        
           if(value=='Admin'){
           return value;
           }
-          else if(value=='User'){
+          else if(value=='User'&&status=='Enabled'){
         
             return value;
           }
@@ -63,33 +80,43 @@ const checkUser=async(email)=>{
     return null; // Return null in case of an error.
   }
 }
-  useEffect(()=>{
+const SignUpUser=()=>{
+  navigation.navigate("SignUpUser")
+}
+const SignUpAdmin=()=>{
+  navigation.navigate("SignUp")
+}
+const SignUpMechanic=()=>{
+  navigation.navigate("SignUpMechanic")
+}
+  // useEffect(()=>{
     
-    onAuthStateChanged(auth, (user) => {  
+  //   onAuthStateChanged(auth, (user) => {  
     
-      if (user) {
-        checkUser(user.email) // The function returns a promise.
-          .then((Identity) => {
-            console.log("Identity", Identity);
-    
-            if (Identity) {
-              if (Identity === "Admin") {
-                navigation.replace("HomeAdmin");
-              } else if (Identity === "User") {
-                navigation.replace("HomeUser");
-              } else if (Identity === "Mechanic") {
-                navigation.replace("HomeMechanic");
-              }
-            } else {
-              console.log("Identity not found.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching identity:", error);
-          });
-      }
- });
-  })
+  //     if (user) {
+  //       checkUser(user.email) // The function returns a promise.
+  //         .then((Identity) => {
+           
+  //           navigation.navigate("HomeAdmin")
+  //           if (Identity) {
+  //             if (Identity === "Admin") {
+  //               navigation.navigate("HomeAdmin");
+  //             } else if (Identity === "User") {
+  //               navigation.navigate("HomeUser");
+  //             } else if (Identity === "Mechanic") {
+  //               navigation.navigate("HomeMechanic");
+  //             }
+  //           } else {
+  //             console.log("Identity not found.");
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error fetching identity:", error);
+  //         });
+      
+  //   }
+  //   });
+  // })
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
@@ -117,6 +144,11 @@ const checkUser=async(email)=>{
     }, [])
   );
   const loginUserCheck = async () => {
+    if(!isConnected){
+      util.errorMsg("Please connect Internet Connection")
+      return false;
+    }
+    setLoader(true)
     try {
       if (state.email == '') {
         util.errorMsg('Enter Email Address');
@@ -133,27 +165,27 @@ const checkUser=async(email)=>{
 
   const login = async () => {
     try {
-      
-     await signInWithEmailAndPassword(auth,state.email,state.password).then(()=>{
-        
-      checkUser(user.email) // The function returns a promise.
+          await signInWithEmailAndPassword(auth,state.email,state.password).then(()=>{
+      checkUser(state.email) // The function returns a promise.
       .then((Identity) => {
         console.log("Identity", Identity);
-
-        if (Identity) {
-          if (Identity === "Admin") {
-            navigation.navigate("HomeAdmin");
-          } else if (Identity === "User") {
-            navigation.navigate("HomeUser");
-          } else if (Identity === "Mechanic") {
-            navigation.navigate("HomeMechanic");
-          }
-        } else {
-          console.log("Identity not found.");
+        setLoader(false)
+        if(Identity==='Admin'){
+          navigation.navigate("HomeAdmin")
         }
+        else if(Identity==='User'){
+          navigation.navigate("HomeUser")
+        }
+        else if(Identity==='Mechanic'){
+          navigation.navigate("HomeMechanic")
+        }
+        else{
+          util.errorMsg("Please wait until administrator allows you")
+        }
+        resetForm();
       })
      }).catch(error=>{
-        setLoader(false)
+      
         if(error.code=='auth/too-many-request'){
           
           util.errorMsg('Too many wrong attempts')
@@ -164,16 +196,24 @@ const checkUser=async(email)=>{
         }
         if(error.code=='auth/user-not-found')
         {
-              util.errorMsg("User not found")
+         util.errorMsg("User not found")
         }
         
         })    
     } catch (e) {
-      setLoader(false);
+  
       console.log('Exception => login', e);
     }
+
+
   };
 
+  const resetForm=()=>{
+    setState({
+      email:'',
+      password:'',
+    })
+  }
   return (
    
       <SafeAreaView style={styles.container}>
@@ -217,16 +257,36 @@ const checkUser=async(email)=>{
           <View style={styles.buttonView}>
             <Button loader={loader} btnPress={loginUserCheck}  label={'Login'} />
           </View>
+          <View style={styles.buttonView}>
+            <Button  btnPress={SignUpUser}  label={'Register'} />
+          </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('SignUp')}
+            onPress={SignUpAdmin}
             style={styles.RegisterView}>
-            <Text style={styles.registerText}>SignUp as a User</Text>
+            <Text style={styles.registerText}>SignUp as an Admin</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('SignUp')}
+            onPress={SignUpMechanic}
             style={styles.RegisterView}>
             <Text style={styles.registerText}>SignUp as a Service Provider</Text>
           </TouchableOpacity>
+
+          <View style={styles.socialButtonContainer}>
+          <TouchableOpacity style={styles.socialButton}>
+            
+            <Image source={require('../assets/google.png')} style={styles.socialButtonIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.socialButton}>
+            {/* Add Facebook button icon/image here */}
+            <Image source={require('../assets/facebook.png')} style={styles.socialButtonIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.socialButton}>
+            {/* Add Instagram button icon/image here */}
+            <Image source={require('../assets/Instagram.png')} style={styles.socialButtonIcon} />
+          </TouchableOpacity>
+        </View>
         </View>
         <Toast ref={ref => Toast.setRef(ref)} />
       </SafeAreaView>
@@ -273,8 +333,8 @@ const styles=StyleSheet.create({
       },
       buttonView: {
         backgroundColor:'#3A0A6A',
-borderRadius:Metrics.ratio(70),
-        marginTop: Metrics.ratio(70),
+borderRadius:Metrics.ratio(30),
+        marginTop: Metrics.ratio(10),
         width: Metrics.vw * 60,
         height:Metrics.vh*6,
         marginHorizontal: Metrics.vw * 20,
@@ -291,6 +351,7 @@ borderRadius:Metrics.ratio(70),
         alignItems: "center",
       },
       registerText:{
+        marginLeft:Metrics.smallMargin,
         textAlign:'right',
         color:'#3A0A6A',
         fontSize:Metrics.ratio(16),
@@ -304,7 +365,24 @@ borderRadius:Metrics.ratio(70),
         marginBottom: Metrics.baseMargin,
         // backgroundColor: "red",
       },
-    
+      socialButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginTop: Metrics.ratio(20),
+      },
+      socialButton: {
+        backgroundColor: 'white', // Set your desired background color for the buttons
+        width: Metrics.vw * 18,
+        height: Metrics.vh * 6,
+        borderRadius: Metrics.ratio(10),
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      socialButtonIcon: {
+        width: Metrics.ratio(95),
+        height: Metrics.ratio(25),
+        resizeMode: 'contain',
+      }, 
 })
 export default Login;
 

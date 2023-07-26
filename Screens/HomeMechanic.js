@@ -6,7 +6,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import Request from './Requests';
 import Rating from './Rating';
 import Settings from './Settings';
-import {firebase} from './Firebase';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+
+
 const HomeMechanic=({navigation})=>{
     useFocusEffect(
         React.useCallback(() => {

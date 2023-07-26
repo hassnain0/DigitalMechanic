@@ -16,8 +16,8 @@ const CustomDialog = ({ visible, onClose, services, onServiceSelect }) => {
   };
 
   const handleApply = () => {
+  
     onServiceSelect(selectedServices);
-    
     
   };
 

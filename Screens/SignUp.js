@@ -4,11 +4,9 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
-import firebase from 'firebase/compat';
-import {Platform, StyleSheet} from 'react-native';
+import { StyleSheet} from 'react-native';
 import {Colors, Metrics} from '../themes';
 import MainTextInput from '../components/MainTextInput';
 import {Picker} from '@react-native-picker/picker';
@@ -25,18 +23,14 @@ const SignUp=({navigation})=> {
   const [state, setState] = React.useState({
     email: '',
     password: '',
-    cnic: '', shop: '',
+    cnic: '',
     name: '',
     phone: '',
-   phone2:'',
-    password: '',
-    vehicle: '',
+  
   });
   const [isConnected,setIsConnected]=React.useState(true)
-  const [selectedValue, setSelectedValue] = React.useState('');
-  const [selectedIdentity, setSelectedIdentity] = React.useState('');
+ 
   
-  const [loader, setLoader] = React.useState(false);
   const _handleTextChange = (name, val) => {
     setState({
       ...state,
@@ -44,11 +38,7 @@ const SignUp=({navigation})=> {
     });
   };
 
-  const selectValue=(item,index)=>{
-    setSelectedValue(index)
-    setSelectedIdentity(item)
-
-  }
+ 
   React.useEffect(()=>{
   
     const unsubscribe=NetInfo.addEventListener(state=>{
@@ -67,6 +57,15 @@ const SignUp=({navigation})=> {
       util.errorMsg('Enter User Name');
       return false;
     }
+
+      if (util.stringIsEmpty(email)) {
+      util.errorMsg('Enter Email');
+      return false;
+    }
+    if (util.stringIsEmpty(password)) {
+      util.errorMsg('Enter Password');
+      return false;
+    }
     if (util.stringIsEmpty(phone)) {
       util.errorMsg('Enter Phone Number');
       return false;
@@ -76,30 +75,7 @@ const SignUp=({navigation})=> {
         return false;
       }
 
-    if (util.stringIsEmpty(email)) {
-      util.errorMsg('Enter Email');
-      return false;
-    }
-    if (util.stringIsEmpty(password)) {
-      util.errorMsg('Enter Password');
-      return false;
-    }
-    if (util.stringIsEmpty(selectedIdentity)) {
-      util.errorMsg('Select Identity');
-      return false;
-    }
-    if (selectedValue == '2' && util.stringIsEmpty(vehicle)) {
-      util.errorMsg('Enter Vehicle Details');
-      return false;
-    }
-    if (selectedValue == '3' && util.stringIsEmpty(phone2)) {
-        util.errorMsg('Enter Another Phone no');
-        return false;
-      }
-      if (selectedValue == '3' && util.stringIsEmpty(shop)) {
-        util.errorMsg('Enter Shop Details');
-        return false;
-      }
+  
     return true;
   };
   const onRegister = () => {
@@ -134,42 +110,22 @@ const SignUp=({navigation})=> {
 
   const onRegisterApiCall = async ()=> {
   
-    const userEmail=firebase.auth().currentUser.email
-   if(selectedIdentity=="Admin"){
+   
     await db.collection("Registration").add({
         Name:state.name,
         PhoneNO:state.phone,
         CNIC:state.cnic,
-        Identity:selectedIdentity,
-    
-       })
-   }
-   else if(selectedIdentity=="User"){
-    
-    await db.collection("Registration").add({
-        Name:state.name,
         Email:state.email,
-        PhoneNO:state.phone,
-        CNIC:state.cnic,
-        Identity:selectedIdentity,
-        CarDetail:state.vehicle,
+        Identity:"Admin",
     
+       }).then(()=>{
+        resetForm();
+        util.successMsg("Sucessfully Registered")
+       }).catch((error)=>{
+        console.log(error)
        })
-   }
-   else{
-    await db.collection("Registration").add({
-        Name:state.name,
-        Email:state.email,
-        PhoneNO:state.phone,
-        CNIC:state.cnic,
-        Identity:selectedIdentity,
-        Phone2:state.phone2,
-        ShopDetails:state.shop,
-    
-       })
-   }
-   resetForm();
-   util.successMsg("Sucessfully Registered")
+
+   
   };
 
   const resetForm = () => {
@@ -179,10 +135,8 @@ const SignUp=({navigation})=> {
         cnic: '',
         name: '',
         phone: '',
-       phone2:'',
-        carDetail: '',
         password: '',
-        vehicle: '',
+      
     });
   };
 
@@ -215,31 +169,7 @@ const SignUp=({navigation})=> {
               autoCapitalize={'none'}
             />
 
-            <MainTextInput
-              Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
-              onChangeText={t => _handleTextChange('phone', t)}
-              value={state.phone}
-              label="Phone No"
-              placeholder=""
-              keyboardType="number-pad"
-              autoCapitalize={'none'}
-            />
-
-             <MainTextInput
-              Icon={
-                <Icon.MaterialCommunityIcons
-                  name="email-outline"
-                  style={styles.iconStyle}
-                />
-              }
-              onChangeText={t => _handleTextChange('cnic', t)}
-              value={state.c}
-              label="CNIC No"
-              placeholder=""
-              keyboardType={'numeric'}
-              autoCapitalize={'none'}
-            />
-            <MainTextInput
+ <MainTextInput
               Icon={
                 <Icon.MaterialCommunityIcons
                   name="email-outline"
@@ -270,83 +200,39 @@ const SignUp=({navigation})=> {
               rightIcon={true}
               passowrdhide={true}
             />
-
-        
-            <View style={styles.main}>
-              <View style={styles.iconsRound}>
-                <Icon.MaterialIcons
-                  name="location-on"
-                  style={styles.iconStyle}
-                />
-              </View>
-              <View style={styles.dropDownView}>
-              <Picker
-        selectedValue={selectedIdentity}
-        onValueChange={selectValue} // Make sure to pass the function directly
-      >
-        <Picker.Item label="Select Identity" value="" />
-        <Picker.Item label="Admin" value="Admin" />
-        <Picker.Item label="User" value="User" />
-        <Picker.Item label="Mechanic" value="Mechanic" />
-      </Picker>
-              </View>
-            </View>
-            {selectedValue == '3' && (
-              <MainTextInput
-                Icon={
-                  <Icon.MaterialIcons name="shop" style={styles.iconStyle} />
-                }
-                onChangeText={t => _handleTextChange('shop', t)}
-                value={state.shop}
-                label={"Specialities"}
-                placeholder=""
-                // keyboardType="name-phone-pad"
-                autoCapitalize={'none'}
-              />
-            )}
-            {selectedValue == '3' && (
-              <MainTextInput
+           
+            <MainTextInput
               Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
-              onChangeText={t => _handleTextChange('phone2', t)}
-              value={state.phone2}
+              onChangeText={t => _handleTextChange('phone', t)}
+              value={state.phone}
               label="Phone No"
               placeholder=""
               keyboardType="number-pad"
               autoCapitalize={'none'}
             />
 
-            )}
-            
-            {selectedValue == '2' && (
-              <MainTextInput
-                Icon={
-                  <Icon.FontAwesome5 name="car-side" style={styles.iconStyle} />
-                }
-                onChangeText={t => _handleTextChange('vehicle', t)}
-                value={state.vehicle}
-                label={"VehicleDetail"}
-                placeholder=""
-                // keyboardType="name-phone-pad"
-                autoCapitalize={'none'}
-              />
-            )}
-
+             <MainTextInput
+              Icon={
+                <Icon.MaterialCommunityIcons
+                  name="email-outline"
+                  style={styles.iconStyle}
+                />
+              }
+              onChangeText={t => _handleTextChange('cnic', t)}
+              value={state.cnic}
+              label="CNIC No"
+              placeholder=""
+              keyboardType={'numeric'}
+              autoCapitalize={'none'}
+            />
             <View style={styles.bottomContainer}>
               <View style={styles.buttonView}>
                 <Button
-                  loader={loader}
+                 
                   btnPress={onRegister}
-                  label={"SubmitYourRequest"}
+                  label={"Submit"}
                 />
               </View>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Login')}
-                style={styles.backView}>
-                <Text style={styles.registerText}>
-                  {"BackToLogin"}
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

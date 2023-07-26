@@ -2,9 +2,11 @@ import React, { useState,useEffect } from 'react'
 import {Image,TextInput, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler,Modal, ImageBackground} from 'react-native'
 import {  Metrics } from '../themes'
 import CustomDialog from './CustomDialog';
-import {  db } from './Firebase';
+import {  db,firebase} from './Firebase';
+import { getAuth,} from 'firebase/auth';
 import Locations from './Locations';
 import { useFocusEffect } from '@react-navigation/native';
+import util from '../helpers/util';
 
 
 const HomeUser=({navigation})=>{
@@ -25,12 +27,13 @@ const HomeUser=({navigation})=>{
       
        const handleConfirm=async()=>{
         try{    
-          const myDate=new Date().toLocaleDateString;
+          const date=new Date().toLocaleDateString();
         await db.collection("Feedback").add({
-              date:myDate,
+              myDate:date,
               Feedback:inputText,
             }).then(()=>{
-
+setInputText('');
+setShowInput(false);
             })
             }
           
@@ -75,35 +78,67 @@ navigation.navigate('CheckHistory')
     }
 
     const Cancel=()=>{
+      const userEmail=firebase.auth().currentUser.email;
+      // db.collection("RequestService").where("Status",'==','Pending')
+      // .where("Email", "==", userEmail)
+      // .get()
+      // .then((querySnapshot) => {
+      //   querySnapshot.forEach((doc) => {
+      //     // Use the entire state object to update the document
+      //     db.collection("Registration")
+      //       .doc(doc.id)
+      //       .update(state)
+      //       .then(() => {
+      //       util.successMsg("Your data is successfully updated")  
+      //     resetForm();                })
+      //       .catch((error) => {
+      //         console.error("Error updating document:", error);
+      //       });
+      //   });
+      // })
 
+      // .catch((error) => {
+      //   console.error("Error fetching document:", error);
+      // });
     }
     const RateFeedback=()=>{
       setShowInput(true)
     }
     
     const handleServiceSelect = (selected) => {
-       if(selected.length==0){
-       
-       }
-        setSelectedServices(selected);
+      
 
+        setSelectedServices(selected);
+       
+if(selectedServices==null){
+  return false;
+}
         try{
-            db.collection("RequestService").add({
-                Service:selectedServices,
+          const auth=getAuth();
+          const email=auth.currentUser.email;
+          const date=new Date().toLocaleDateString();
+          db.collection("Feedback").add({
+              
+            
+              myDate:date, 
+              Service:selectedServices,
                 Status:"Pending",
+                Email:email,
+               
             }).then(()=>
             setDialogVisible(false),
-            navigation.navigate("Locations")  )      }
+            navigation.navigate("Locations")  )     
+           }
         catch(error){
             console.log(error)
         }
       };
      
     return(
-        
+
         
 
-<ImageBackground source={require("../assets/ImageBackground.jpeg")} style={styles.ViewContainer}>
+<ImageBackground source={require("../assets/ImageBackground.jpeg")} style={styles.container}>
 <CustomDialog
         visible={isDialogVisible}
         onClose={handleCloseDialog}
@@ -113,26 +148,26 @@ navigation.navigate('CheckHistory')
     <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/User.png")}
+                    source={require("../assets/20945730.jpg")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
                     onPress={RequestMethod}
                     style={[styles.touchContainer]}
                   >
-                    <Text style={styles.buttonText}>Provide Services</Text>
+                    <Text style={styles.buttonText}>Request for Service</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/User.png")}
+                    source={require("../assets/4027232_15831.jpg")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
-                    onPress={Cancel}
+                    onPress={CheckHistory}
                     style={[styles.touchContainer]}
                   >
-                    <Text style={styles.buttonText}>Profile Management</Text>
+                    <Text style={styles.buttonText}>Check History</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -140,26 +175,26 @@ navigation.navigate('CheckHistory')
               <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/User.png")}
-                    style={styles.cardImage}
+                    source={require("../assets/Cancel.png")}        
+                    style={styles.cardImage}                   
                   />
                   <TouchableOpacity
-                    onPress={RequestMethod}
+                    onPress={Cancel}
                     style={[styles.touchContainer]}
                   >
-                    <Text style={styles.buttonText}>Check for Services</Text>
+                    <Text style={styles.buttonText}>Cancel Request</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.cardContainer}>
                   <Image
-                    source={require("../assets/User.png")}
+                    source={require("../assets/Start.jpg")}
                     style={styles.cardImage}
                   />
                   <TouchableOpacity
                     onPress={RateFeedback}
                     style={[styles.touchContainer]}
                   >
-                    <Text style={styles.buttonText}>Service Rating and Feedback</Text>
+                    <Text style={styles.buttonText}>Rating Feedback</Text>
                   </TouchableOpacity>
                 </View>
               </View>               
@@ -186,7 +221,6 @@ navigation.navigate('CheckHistory')
        </ImageBackground>
     )
 };
-
 
 const styles=StyleSheet.create({
 ViewContainer:{
@@ -218,7 +252,10 @@ TouchContainer2:{
   justifyContent:'center',
   marginTop:16,
   borderColor:'white',
-}, modalContainer: {
+}, 
+modalContainer: {
+
+  
   flex: 1,
   alignItems: 'center',
   justifyContent: 'center',
@@ -237,26 +274,31 @@ modalButton: {
 MapContainer:{
     
         flex: 1,
-      
         flexDirection:'column',
   width:500,
-  height:400
-
-       
-        
-    
-        
-      },  container: {
+  height:400    
+      },
+      input: {
+        color: 'grey',
+        height: 30,
+        width: 200,
+        borderWidth: 1,
+        borderColor: 'gray',
+        paddingHorizontal: 5,
+        textAlign: 'center',
+      },
+        container: {
         flex: 1,
         backgroundColor: "#f0f0f0",
         padding: 10,
       },
       rowContainer: {
+        marginTop: 40,
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-between", // Adjust spacing between cards horizontally
+        marginVertical: 10,
         marginBottom: 50,
-        
-        margin:20,
+        marginHorizontal: 10, // Add gap between individual cards of each row
       },
       cardContainer: {
         flex: 1,
@@ -270,7 +312,8 @@ MapContainer:{
         },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 2,
+        elevation: 3,
+        marginRight: 10, // Add space between cards within a row
       },
       cardImage: {
         width: 100,
@@ -280,6 +323,7 @@ MapContainer:{
         marginBottom: 20,
       },
       touchContainer: {
+        alignItems: "center",
         backgroundColor: "#3A0A6A",
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -287,46 +331,10 @@ MapContainer:{
         marginBottom: 10,
       },
       buttonText: {
-        fontSize: 20,
+        fontWeight: '300',
+        fontSize: 13,
         color: "white",
         textAlign: "center",
-      },
-
-      ImageContainer:{
-        marginBottom:20,
-        width:300,
-        height:200,
-        marginRight:20
-      },
-
-
-      CardContainer:{
-        flex: 1, height: '100%', width: '100%', borderRadius: 10, 
-        marginTop:50,
-        alignItems:'center',
-        justifyContent:'center'
-      },
-      TouchContainer:{
-        backgroundColor:'#002F46',
-        
-        elevation:10,
-        borderWidth:2,
-          marginBottom:10, 
-        borderRadius:15,
-        alignItems:'center',
-        height:70,
-        justifyContent:'center',
-        marginTop:16,
-        borderColor:'white',
-      },
-      input: {
-        color: 'grey',
-        height: 30,
-        width: 200,
-        borderWidth: 1,
-        borderColor: 'gray',
-        paddingHorizontal: 5,
-        textAlign: 'center',
       },
 });
 

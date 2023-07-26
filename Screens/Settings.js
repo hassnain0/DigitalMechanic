@@ -4,12 +4,13 @@ import { Switch, Button } from 'react-native-paper';
 import MainTextInput from '../components/MainTextInput';
 import Icon from '../helpers/Icons';
 import { Metrics } from '../themes';
-import { auth, db,firebase } from './Firebase';
+import {  db } from './Firebase';
 import util from '../helpers/util';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { getAuth,} from 'firebase/auth';
 
 const Settings = () => {
-    const [state, setState] = React.useState({Name:'',Email: '',CNIC: '',Phone1: '',PhoneNO:'',ShopDetails:''});
+    const [state, setState] = React.useState({Name:'',Email: '',CNIC: '',Phone1: '',PhoneNO:'',ShopDetails:'',Address:''});
    
     const _handleTextChange = (name, val) => {
       setState((prevState) => ({
@@ -20,20 +21,24 @@ const Settings = () => {
 
     useEffect(()=>{
       const fetchData = async () => {
+        
         try {
-          const email=firebase.auth().currentUser.email;
+          const auth=getAuth();
+          const email=auth.currentUser.email;
+          
           const querySnapshot = await db
             .collection("Registration")
             .where("Identity", "==", "Mechanic").where("Email",'==',email)
             .get();
-         
+        
 
           if (!querySnapshot.empty) {
             // If at least one matching document is found
             const data = querySnapshot.docs.map((doc) => doc.data());
+            console.log("data")
             // Assuming the data contains a single document with the relevant information
             const firstData = data[0] || {};
-            console.log(firstData)
+            console.log("firstData",firstData)
             // Populate the state with data from Firebase
             setState((prevState) => ({
               ...prevState,
@@ -44,6 +49,7 @@ const Settings = () => {
               Phone1: firstData.PhoneNO || "",
               PhoneNO: firstData.Phone2 || "",
               ShopDetails:firstData.ShopDetails || "",
+              Address:firstData.Address || "",
             }));
           }
         }
@@ -96,6 +102,7 @@ const Settings = () => {
         Phone1: '',
        PhoneNO:'',
         ShopDetails: '',
+        Address: '',
     });
   };
     return (
@@ -191,6 +198,19 @@ const Settings = () => {
           onChangeText={t => _handleTextChange('ShopDetails', t)}
           value={state.ShopDetails}
           label={'Specialities'}
+          placeholder=""
+          autoCapitalize={'none'}
+        />
+         <MainTextInput
+          Icon={
+            <Icon.FontAwesome5
+              name="user-circle"
+              style={styles.iconStyle}
+            />
+          }
+          onChangeText={t => _handleTextChange('Address', t)}
+          value={state.Address}
+          label={'Shop Address'}
           placeholder=""
           autoCapitalize={'none'}
         />
