@@ -51,7 +51,7 @@ const SignUpUser=({navigation})=> {
  
 
   const _validation = () => {
-    const {email, name, phone, phone2,cnic,password, address,shop} =
+    const {email, name, phone, phone2,cnic,password, vehcile} =
       state;
     if (util.stringIsEmpty(name)) {
       util.errorMsg('Enter User Name');
@@ -69,23 +69,17 @@ const SignUpUser=({navigation})=> {
       util.errorMsg('Enter Phone Number');
       return false;
     }
-    if (util.stringIsEmpty(phone2)) {
-        util.errorMsg('Enter Phone Number 2');
-        return false;
-      }
+  
     if (util.stringIsEmpty(cnic)) {
         util.errorMsg('Enter CNIC No');
         return false;
       }
 
-    if (util.stringIsEmpty(shop)) {
-        util.errorMsg('Enter Specialities');
+    if (util.stringIsEmpty(vehcile)) {
+        util.errorMsg('Enter Vehcile Detaisl');
         return false;
       }
-      if (util.stringIsEmpty(address)) {
-        util.errorMsg('Enter Shop Address');
-        return false;
-      }
+    
      
     return true;
   };
@@ -127,14 +121,12 @@ const SignUpUser=({navigation})=> {
         CNIC:state.cnic,
         Identity:"User",
         Phone2:state.phone2,
-        ShopDetails:state.shop,
-        Address:state.address,
-      
+       VehcileDetails:state.vehcile,
         // Status:"Pending",
        })
   
    resetForm();
-   util.errorMsg("Successfully Registered")
+   util.successMsg("Successfully Registered")
   };
 
   const resetForm = () => {
@@ -144,9 +136,9 @@ const SignUpUser=({navigation})=> {
         cnic: '',
         name: '',
         phone: '',
-       phone2:'',
-        password: '',
-       address:'',
+     vehcile:'',
+             password: '',
+      
     });
   };
 
@@ -218,15 +210,7 @@ const SignUpUser=({navigation})=> {
               autoCapitalize={'none'}
             />
 
-<MainTextInput
-              Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
-              onChangeText={t => _handleTextChange('phone2', t)}
-              value={state.phone2}
-              label="Phone No2"
-              placeholder=""
-              keyboardType="number-pad"
-              autoCapitalize={'none'}
-            />
+
 
              <MainTextInput
               Icon={
@@ -243,24 +227,14 @@ const SignUpUser=({navigation})=> {
               autoCapitalize={'none'}
             />
             
-            <MainTextInput
-                Icon={
-                  <Icon.FontAwesome5 name="car-side" style={styles.iconStyle} />
-                }
-                onChangeText={t => _handleTextChange('shop', t)}
-                value={state.shop}
-                label={"Specialties"}
-                placeholder=""
-                // keyboardType="name-phone-pad"
-                autoCapitalize={'none'}
-              />
+          
               <MainTextInput
                 Icon={
                   <Icon.FontAwesome5 name="car-side" style={styles.iconStyle} />
                 }
-                onChangeText={t => _handleTextChange('address', t)}
-                value={state.address}
-                label={"Address"}
+                onChangeText={t => _handleTextChange('vehcile', t)}
+                value={state.vehcile}
+                label={"Vehcile Details"}
                 placeholder=""
                 // keyboardType="name-phone-pad"
                 autoCapitalize={'none'}

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Alert, BackHandler, StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
-import { Button } from 'react-native-elements';
-import { Metrics } from '../themes';
 import { useFocusEffect } from '@react-navigation/native';
-import ListMechanic from './ListMechanic'
+import ListMechanic from './ListMechanic';
+import { auth } from './Firebase';
+import util from '../helpers/util';
 
+useEffect
 
 const HomeAdmin=({navigation})=>{
     useFocusEffect(
@@ -37,6 +38,46 @@ const HomeAdmin=({navigation})=>{
     const RequestMechanic=()=>{
 navigation.navigate("ListMechanic")
     }
+
+    useEffect(() => {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity onPress={handlelogout}>
+            <Image source={require('../assets/LogoutButton.png')} style={{width:30,height:30,marginRight:5}}></Image>
+          </TouchableOpacity>
+        ),
+      });
+    }, [])
+        
+    const logout = () => {
+     
+      auth
+        .signOut()
+        .then(() => util.successMsg("Sucessfully Logout"));
+        navigation.navigate("Login")
+    }
+    
+    const handlelogout=()=>{
+      Alert.alert(
+        'Done Route',
+        'Are you sure you want  to logout?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel'
+          },
+          {
+            text: 'Logout',
+            onPress: () =>logout()
+          }
+        ],
+        { cancelable: false,
+          titleStyle: { color: 'red' },
+          messageStyle: { color: 'blue' }, }
+      );
+      return true;
+    };
      
     return(
       

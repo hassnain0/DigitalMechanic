@@ -55,19 +55,26 @@ const checkUser=async(email)=>{
 
     // Access the "Identity" field from the document data
     const value = doc.data().Identity;
-    const status=doc.data().Status;
+   
     console.log(value);
         if (doc.exists) {
        
           if(value=='Admin'){
           return value;
           }
-          else if(value=='User'&&status=='Enabled'){
+          else if(value=='User'){
         
             return value;
           }
           else if(value=='Mechanic'){
-            return value;
+            if(doc.data().Status=='Enabled'){
+              return value;
+            }
+            else
+            { 
+              util.errorMsg("Please wait until adminsitrator allows you") 
+              return  false;
+              }
           }
           else{
             return false
@@ -83,40 +90,10 @@ const checkUser=async(email)=>{
 const SignUpUser=()=>{
   navigation.navigate("SignUpUser")
 }
-const SignUpAdmin=()=>{
-  navigation.navigate("SignUp")
-}
+
 const SignUpMechanic=()=>{
   navigation.navigate("SignUpMechanic")
 }
-  // useEffect(()=>{
-    
-  //   onAuthStateChanged(auth, (user) => {  
-    
-  //     if (user) {
-  //       checkUser(user.email) // The function returns a promise.
-  //         .then((Identity) => {
-           
-  //           navigation.navigate("HomeAdmin")
-  //           if (Identity) {
-  //             if (Identity === "Admin") {
-  //               navigation.navigate("HomeAdmin");
-  //             } else if (Identity === "User") {
-  //               navigation.navigate("HomeUser");
-  //             } else if (Identity === "Mechanic") {
-  //               navigation.navigate("HomeMechanic");
-  //             }
-  //           } else {
-  //             console.log("Identity not found.");
-  //           }
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error fetching identity:", error);
-  //         });
-      
-  //   }
-  //   });
-  // })
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
@@ -151,9 +128,11 @@ const SignUpMechanic=()=>{
     setLoader(true)
     try {
       if (state.email == '') {
+        setLoader(false)
         util.errorMsg('Enter Email Address');
         return;
       } else if (state.password == '') {
+        setLoader(false)
         util.errorMsg('Enter Password');
         return;
       }
@@ -166,36 +145,39 @@ const SignUpMechanic=()=>{
   const login = async () => {
     try {
           await signInWithEmailAndPassword(auth,state.email,state.password).then(()=>{
+            setLoader(false)
       checkUser(state.email) // The function returns a promise.
       .then((Identity) => {
-        console.log("Identity", Identity);
-        setLoader(false)
+        console.log("Identity",Identity)
         if(Identity==='Admin'){
           navigation.navigate("HomeAdmin")
         }
         else if(Identity==='User'){
+          setLoader(false)
           navigation.navigate("HomeUser")
         }
         else if(Identity==='Mechanic'){
+          setLoader(false)
           navigation.navigate("HomeMechanic")
         }
-        else{
-          util.errorMsg("Please wait until administrator allows you")
-        }
+        
+      //  navigation.navigate("Login")
         resetForm();
       })
      }).catch(error=>{
       
         if(error.code=='auth/too-many-request'){
-          
+          setLoader(false);
           util.errorMsg('Too many wrong attempts')
         }
         if(error.code=='auth/wrong-password'){
-         
+          setLoader(false); 
           util.errorMsg('Wrong Password')
         }
+
         if(error.code=='auth/user-not-found')
         {
+          setLoader(false);
          util.errorMsg("User not found")
         }
         
@@ -260,11 +242,6 @@ const SignUpMechanic=()=>{
           <View style={styles.buttonView}>
             <Button  btnPress={SignUpUser}  label={'Register'} />
           </View>
-          <TouchableOpacity
-            onPress={SignUpAdmin}
-            style={styles.RegisterView}>
-            <Text style={styles.registerText}>SignUp as an Admin</Text>
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={SignUpMechanic}
             style={styles.RegisterView}>

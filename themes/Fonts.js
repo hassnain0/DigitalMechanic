@@ -2,27 +2,26 @@ import { Platform } from "react-native";
 import Metrics from "./Metrics.js";
 const type = {
   // base: Platform.OS == "ios" ? "Helvetica" : "Roboto",
-//   base: "Poppins-Light",
-  base: "Helvetica",
+// //   base: "Poppins-Light",
+//   base: "Helvetica",
 
-  neris: "Helvetica",
-  heading: "Helvetica",
-  // description: "Poppins-Light",
-  description: "Helvetica",
-  semiBold: "Helvetica",
+//   neris: "Helvetica",
+//   heading: "Helvetica",
+//   // description: "Poppins-Light",
+//   description: "Helvetica",
+//   semiBold: "Helvetica",
 
-  regular: Platform.OS == "ios" ? "Helvetica" : "OpenSans-Regular",
-  heavy:
-    Platform.OS == "ios"
-      ? "OpenSans-SemiboldItalic"
-      : "OpenSans-SemiboldItalic_0",
-  medium: "OpenSans-Semibold",
-  light: "OpenSans-Light",
-  book: "OpenSans-Bold",
-  black: "Avenir-Black",
-  normal: "OpenSans-Regular",
-  extraBold: "OpenSans-ExtraBold",
-  schoolBell: Platform.OS == "ios" ? "Schoolbell" : "Schoolbell-pMMy",
+  // heavy:
+  //   Platform.OS == "ios"
+  //     ? "OpenSans-SemiboldItalic"
+  //     : "OpenSans-SemiboldItalic_0",
+  // medium: "OpenSans-Semibold",
+  // light: "OpenSans-Light",
+  // book: "OpenSans-Bold",
+  // black: "Avenir-Black",
+  // normal: "OpenSans-Regular",
+  // extraBold: "OpenSans-ExtraBold",
+  // schoolBell: Platform.OS == "ios" ? "Schoolbell" : "Schoolbell-pMMy",
 };
 
 // Metrics.generatedFontSize(ios, android)

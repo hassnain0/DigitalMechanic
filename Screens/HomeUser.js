@@ -2,11 +2,12 @@ import React, { useState,useEffect } from 'react'
 import {Image,TextInput, StyleSheet, View,Text, TouchableOpacity,Alert, ScrollView, BackHandler,Modal, ImageBackground} from 'react-native'
 import {  Metrics } from '../themes'
 import CustomDialog from './CustomDialog';
-import {  db,firebase} from './Firebase';
+import {  auth, db,firebase} from './Firebase';
 import { getAuth,} from 'firebase/auth';
 import Locations from './Locations';
 import { useFocusEffect } from '@react-navigation/native';
 import util from '../helpers/util';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 
 const HomeUser=({navigation})=>{
@@ -78,28 +79,32 @@ navigation.navigate('CheckHistory')
     }
 
     const Cancel=()=>{
-      const userEmail=firebase.auth().currentUser.email;
-      // db.collection("RequestService").where("Status",'==','Pending')
-      // .where("Email", "==", userEmail)
-      // .get()
-      // .then((querySnapshot) => {
-      //   querySnapshot.forEach((doc) => {
-      //     // Use the entire state object to update the document
-      //     db.collection("Registration")
-      //       .doc(doc.id)
-      //       .update(state)
-      //       .then(() => {
-      //       util.successMsg("Your data is successfully updated")  
-      //     resetForm();                })
-      //       .catch((error) => {
-      //         console.error("Error updating document:", error);
-      //       });
-      //   });
-      // })
+      const userEmail=getAuth().currentUser.email;
+      db.collection("RequestService").where("Status",'==','Pending')
+      .where("Email", "==", userEmail)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(querySnapshot)
+          // Use the entire state object to update the document
+          db.collection("RequestService")
+            .doc(doc.id)
+            .update({
+              Status:"Deleted"
+            })
+            .then(() => {
 
-      // .catch((error) => {
-      //   console.error("Error fetching document:", error);
-      // });
+            util.successMsg(" Request  deleted")  
+                    })
+            .catch((error) => {
+              console.error("Error updating document:", error);
+            });
+        });
+      })
+
+      .catch((error) => {
+        console.error("Error fetching document:", error);
+      });
     }
     const RateFeedback=()=>{
       setShowInput(true)
@@ -117,7 +122,7 @@ if(selectedServices==null){
           const auth=getAuth();
           const email=auth.currentUser.email;
           const date=new Date().toLocaleDateString();
-          db.collection("Feedback").add({
+          db.collection("RequestService").add({
               
             
               myDate:date, 
@@ -133,11 +138,47 @@ if(selectedServices==null){
             console.log(error)
         }
       };
+      useEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity onPress={handlelogout}>
+              <Image source={require('../assets/LogoutButton.png')} style={{width:30,height:30,marginRight:5}}></Image>
+            </TouchableOpacity>
+          ),
+        });
+      }, [])
+          
+      const logout = () => {
+       
+        auth
+          .signOut()
+          .then(() => util.successMsg("Sucessfully Logout"));
+          navigation.navigate("Login")
+      }
+      
+      const handlelogout=()=>{
+        Alert.alert(
+          'Done Route',
+          'Are you sure you want  to logout?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel'
+            },
+            {
+              text: 'Logout',
+              onPress: () =>logout()
+            }
+          ],
+          { cancelable: false,
+            titleStyle: { color: 'red' },
+            messageStyle: { color: 'blue' }, }
+        );
+        return true;
+      };
      
     return(
-
-        
-
 <ImageBackground source={require("../assets/ImageBackground.jpeg")} style={styles.container}>
 <CustomDialog
         visible={isDialogVisible}
@@ -218,6 +259,7 @@ if(selectedServices==null){
           </View>
         </View>
       </Modal>
+      <Toast ref={ref => Toast.setRef(ref)} />
        </ImageBackground>
     )
 };

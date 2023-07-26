@@ -12,7 +12,7 @@ export default function ListMechanic({ navigation }) {
   useEffect(() => {
    
     const collectionRef = db.collection('Registration').where('Status', '==', 'Pending').where('Identity','==','Mechanic');
-    console.log(c)
+   
     collectionRef.get().then((querySnapshot) => {
       const documents = [];
       querySnapshot.forEach((doc) => {

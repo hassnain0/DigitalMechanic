@@ -50,7 +50,25 @@ const SignUpMechanic=({navigation})=> {
       unsubscribe();
     }
 }) 
- 
+const isStrongPassword = (password) => {
+  // This function checks if the password contains at least one special character, one uppercase letter, and one lowercase letter
+  const specialChars = '!@#$%^&*()_-+={}[]|:;"<>,.?/~`';
+  let hasSpecialChar = false;
+  let hasUppercase = false;
+  let hasLowercase = false;
+
+  for (let char of password) {
+    if (specialChars.includes(char)) {
+      hasSpecialChar = true;
+    } else if (char === char.toUpperCase() && char !== char.toLowerCase()) {
+      hasUppercase = true;
+    } else if (char === char.toLowerCase() && char !== char.toUpperCase()) {
+      hasLowercase = true;
+    }
+  }
+
+  return hasSpecialChar && hasUppercase && hasLowercase;
+};
 
   const _validation = () => {
     setLoader(true);
@@ -60,33 +78,60 @@ const SignUpMechanic=({navigation})=> {
       util.errorMsg('Enter User Name');
       return false;
     }
-    if (util.stringIsEmpty(phone)) {
-      util.errorMsg('Enter Phone Number');
-      return false;
-    }
-    if (util.stringIsEmpty(cnic)) {
-        util.errorMsg('Enter CNIC No');
-        return false;
-      }
-
     if (util.stringIsEmpty(email)) {
+      setLoader(false)
       util.errorMsg('Enter Email');
       return false;
     }
     if (util.stringIsEmpty(password)) {
+      setLoader(false)
       util.errorMsg('Enter Password');
       return false;
     }
-   
-    if (util.stringIsEmpty(phone2)) {
+   if(!isStrongPassword(password)){
+    setLoader(false)
+util.errorMsg("Password must contain special character capital and small letters")
+return false;
+   }
+    if (util.stringIsEmpty(phone)) {
+      setLoader(false)
+      util.errorMsg('Enter Phone Number');
+      return false;
+    }
+    if(phone.length!==11){
+      setLoader(false)
+     util.errorMsg("Please enter 11 digit phone no") 
+     return false;
+    }
+       
+      if (util.stringIsEmpty(phone2)) {
+      setLoader(false)
         util.errorMsg('Enter different Phone no');
         return false;
       }
+      if(phone2.length!==11){
+        setLoader(false)
+        util.errorMsg("Please enter 11 digit phone no")
+        return false;
+            }
+     if (util.stringIsEmpty(cnic)) {
+      setLoader(false)
+        util.errorMsg('Enter CNIC No');
+        return false;
+      }
+      if(cnic.length!==13){
+        setLoader(false)
+        util.errorMsg("Please enter 13 digit CNIC No")
+        return false;
+            }
+
       if (util.stringIsEmpty(shop)) {
-        util.errorMsg('Enter shop Specilialities');
+        setLoader(false) 
+         util.errorMsg('Enter shop Specilialities');
         return false;
       }
       if (util.stringIsEmpty(address)) {
+        setLoader(false)
         util.errorMsg('Enter shop Address');
         return false;
       }
@@ -134,7 +179,7 @@ const SignUpMechanic=({navigation})=> {
         Identity:"Mechanic",
         Phone2:state.phone2,
         ShopDetails:state.shop,
-        //   Status:"Pending",
+          Status:"Pending",
        })
   
    resetForm();
@@ -184,31 +229,7 @@ const SignUpMechanic=({navigation})=> {
               autoCapitalize={'none'}
             />
 
-            <MainTextInput
-              Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
-              onChangeText={t => _handleTextChange('phone', t)}
-              value={state.phone}
-              label="Phone No"
-              placeholder=""
-              keyboardType="number-pad"
-              autoCapitalize={'none'}
-            />
-
-             <MainTextInput
-              Icon={
-                <Icon.MaterialCommunityIcons
-                  name="email-outline"
-                  style={styles.iconStyle}
-                />
-              }
-              onChangeText={t => _handleTextChange('cnic', t)}
-              value={state.c}
-              label="CNIC No"
-              placeholder=""
-              keyboardType={'numeric'}
-              autoCapitalize={'none'}
-            />
-            <MainTextInput
+<MainTextInput
               Icon={
                 <Icon.MaterialCommunityIcons
                   name="email-outline"
@@ -239,17 +260,43 @@ const SignUpMechanic=({navigation})=> {
               rightIcon={true}
               passowrdhide={true}
             />
+            <MainTextInput
+              Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
+              onChangeText={t => _handleTextChange('phone', t)}
+              value={state.phone}
+              label="Phone No"
+              placeholder=""
+              keyboardType="number-pad"
+              autoCapitalize={'none'}
+            />
 
         
-            <View style={styles.main}>
-              <View style={styles.iconsRound}>
-                <Icon.MaterialIcons
-                  name="location-on"
+<MainTextInput
+              Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
+              onChangeText={t => _handleTextChange('phone2', t)}
+              value={state.phone2}
+              label="Phone No"
+              placeholder=""
+              keyboardType="number-pad"
+              autoCapitalize={'none'}
+            />
+             <MainTextInput
+              Icon={
+                <Icon.MaterialCommunityIcons
+                  name="email-outline"
                   style={styles.iconStyle}
                 />
-              </View>
-             
-            </View>
+              }
+              onChangeText={t => _handleTextChange('cnic', t)}
+              value={state.c}
+              label="CNIC No"
+              placeholder=""
+              keyboardType={'numeric'}
+              autoCapitalize={'none'}
+            />
+           
+
+        
             
               <MainTextInput
                 Icon={
@@ -264,15 +311,6 @@ const SignUpMechanic=({navigation})=> {
               />
             
         
-              <MainTextInput
-              Icon={<Icon.FontAwesome5 name="phone" style={styles.iconStyle} />}
-              onChangeText={t => _handleTextChange('phone2', t)}
-              value={state.phone2}
-              label="Phone No"
-              placeholder=""
-              keyboardType="number-pad"
-              autoCapitalize={'none'}
-            />
 
               <MainTextInput
                 Icon={
@@ -280,7 +318,7 @@ const SignUpMechanic=({navigation})=> {
                 }
                 onChangeText={t => _handleTextChange('address', t)}
                 value={state.address}
-                label={"Shop Addres"}
+                label={"Shop Address"}
                 placeholder=""
                 // keyboardType="name-phone-pad"
                 autoCapitalize={'none'}

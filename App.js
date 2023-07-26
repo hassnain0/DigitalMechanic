@@ -4,10 +4,8 @@ import HomeUser from './Screens/HomeUser';
 import HomeAdmin from './Screens/HomeAdmin';
 import HomeMechanic from './Screens/HomeMechanic';
 import Login from './Screens/Login'
-import SignUp from './Screens/SignUp'
 import SplashScreen from './Screens/SplashScreen'
 import ForgotScreen from './Screens/ForgotScreen'
-import DrawerNavigator from './DrawerNavigator';
 import Locations from './Screens/Locations';
 import CheckHistory from './Screens/CheckHistory';
 import Request from './Screens/Requests';
@@ -53,7 +51,7 @@ export default function App() {
 })}/> 
 <Stack.Screen name='Request' component={Request} options={( ) => ({headerTintColor:'black',title:'List Request',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
 })}/> 
-<Stack.Screen name='SignUpMechanic' component={SignUpMechanic} options={( ) => ({headerTintColor:'black',title:'',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
+<Stack.Screen name='SignUpMechanic' component={SignUpMechanic} options={( ) => ({headerShown:false, headerTintColor:'black',title:'',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
 })}/>
 <Stack.Screen name='SignUpUser' component={SignUpUser} options={( ) => ({statusBarColor:'#3A0A6A',headerShown:false
 })}/> 
@@ -86,9 +84,7 @@ export default function App() {
            
       })}/> 
     <Stack.Screen name='Login' component={Login} options={{headerShown:false,statusBarColor:'#3A0A6A'}}/>
-    <Stack.Screen name='SignUp' component={SignUp} options={{headerShown:false,statusBarColor:'#3A0A6A', headerTransparent: true,title:'',
-           headerTintColor: 'white',}}
-          />
+
            <Stack.Screen name='ForgotScreen' component={ForgotScreen} options={{statusBarColor:'#49B3AA', headerTransparent: true,title:'',
           headerTintColor: 'white',}}
           />

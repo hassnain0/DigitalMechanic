@@ -1,5 +1,5 @@
-import { Platform, Alert, ToastAndroid, NativeModules } from "react-native";
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import { Platform, Alert, } from "react-native";
+import Toast from 'react-native-toast-message';
 class Util {
   getPlatform = () => Platform.OS;
 
