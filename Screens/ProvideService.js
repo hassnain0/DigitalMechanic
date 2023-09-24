@@ -9,16 +9,12 @@ const ProvideService= () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-       
-        const querySnapshot = await db
+      const querySnapshot = await db
           .collection("Registration")
-          .get();
-
-          console.log(querySnapshot)
+          .get()
+         
         if (!querySnapshot.empty) {
           const specialtiesData = querySnapshot.docs.map((doc) => doc.data().ShopDetails);
-          console.log("specialtiesData", specialtiesData);
           setSpecialties(specialtiesData);
         } else {
           setSpecialties([]);

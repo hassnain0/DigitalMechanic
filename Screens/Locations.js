@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {Text, StyleSheet, View ,Dimensions, TouchableOpacity, FlatList, ScrollView} from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE,ActivityIndicator,Polyline,AnimatedRegion } from 'react-native-maps';
+import {Text, StyleSheet, View ,Dimensions, TouchableOpacity, FlatList, ScrollView,Button} from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MapView, { Marker, PROVIDER_GOOGLE,} from 'react-native-maps';
 import * as Location from 'expo-location'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ImagePath from '../helpers/ImagePath';
 import { Metrics } from '../themes';
 import { db } from './Firebase';
-const Locations=()=>{
+const Locations=({route})=>{
 
    const mapRef=useRef(null)
    const markerRef=useRef(null);
- 
    
    //Map Dimensions
 
@@ -58,46 +59,109 @@ const Locations=()=>{
 useEffect(()=>{
 
   // Function to fetch data from Firestore and add to mechanicsData
-  async function fetchMechanicsData() {
-    try {
-      const mechanicsCollection =db.collection("Registration").where('Identity','==','Mechanic')
-      const snapshot = await mechanicsCollection.get();
-  
-      snapshot.forEach((doc) => {
-        const mechanic = doc.data();
-        mechanicsData.push(mechanic);
-      });
-  
-      console.log('Mechanics data fetched and added successfully:', mechanicsData);
-    } catch (error) {
-      console.error('Error fetching mechanics data:', error);
-    }
-  }
-  
-  // Call the function to fetch data and add to mechanicsData
-  fetchMechanicsData();
+ console.log("Route",route.params)
   //Get Current location of user
-  const getMyLocation = async () => {
+//   const getMyLocation = async () => {
 
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      return;
-    }
+//     let { status } = await Location.requestForegroundPermissionsAsync();
+//     if (status !== 'granted') {
+//       return;
+//     }
 
-    let location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true
-    });
-animate(latitude,longitude)
-    const latitude=location.coords.latitude;
-    const longitude=location.coords.longitude
+//     let location = await Location.getCurrentPositionAsync({
+//       enableHighAccuracy: true
+//     });
+// animate(latitude,longitude)
+//     const latitude=location.coords.latitude;
+//     const longitude=location.coords.longitude
     
-  }
-getMyLocation();
+//   }
+// getMyLocation();
 },[])
    
+
+const MechanicList=[
+  {
+      id:1,
+      userImg:"https://menshaircuts.com/wp-content/uploads/2023/01/tp-simple-hair-style-men.jpg",
+      userName:"Ahmad",
+      time:"38 mins",
+      distance: "16.3 mi",
+      price:"24",
+      pickup:"Street abc, ABC road, town Abc",
+      pickupRegion: {
+          latitude: 28.412431403916305,
+          longitude: 70.3080391511321,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      },
+      dropoff:"Street2 abc, ABC Main Road",
+      dropoffRegion:{
+          latitude: 28.422692508486698,
+          longitude: 70.3116587921977,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      },
+      stops:[
+          {
+              id:1,
+              stopName:"Street abc2, ABC Road, Town",
+              stopRegion: {
+                  latitude: 28.41851275733448,
+                  longitude: 70.31051248311996,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+              },
+          }
+      ]
+  },
+  {
+      id: 2,
+      userImg: "https://www.pinkvilla.com/images/2023-01/1674581250_pexels-jhosua-rodriguez-2465327.jpg",
+      userName: "Anna",
+      time: "38 mins",
+      distance: "16.3 mi",
+      price: "24",
+      pickup: "Street abc, ABC road, town Abc",
+      pickupRegion: {
+          latitude: 28.40962312387894,
+          longitude: 70.30914556235075,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      },
+      dropoff: "Street2 abc, ABC Main Road",
+      dropoffRegion: {
+          latitude: 28.392880715002157,
+          longitude: 70.3328562900424,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      },
+      stops: [
+          {
+              id: 1,
+              stopName: "Street abc2, ABC Road, Town",
+              stopRegion: {
+                  latitude: 28.404047923309488,
+                  longitude: 70.3093832731247,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+              },
+          },
+          {
+              id: 2,
+              stopName: "Street 123, ABC Road, Town",
+              stopRegion: {
+                  latitude: 28.399621173203865,
+                  longitude: 70.30930984765291,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+              },
+          }
+      ]
+  }
+]
 const renderMechanicItem = ({ item }) => {
  
-  console.log("Item",item)
   // Function to open the dial pad with the provided phone number
   const handleCallPress = () => {
     if (item.phoneNumber) {
@@ -133,20 +197,176 @@ const MarkerPressed = () => {
           image={ImagePath.Engineer}
           onPress={MarkerPressed}
         />
+        <Marker
+          draggable={true}
+          ref={markerRef}
+          title="Nearby Mechanic"
+          coordinate={currlocation2}
+          image={ImagePath.Engineer}
+          
+        />
       </MapView>
       {markerShown && (
-        <View style={styles.BottomCard}>
-          <View style={{ position: 'absolute', bottom: 0, paddingBottom: 80, left: 40, backgroundColor: 'white' }}>
-            <FlatList
-              style={{ flex: 1 }}
-              contentContainerStyle={styles.flatListContent}
-              data={mechanicsData}
-              renderItem={renderMechanicItem}
-              keyExtractor={(item) => item.CNIC.toString()}
-            />
-            <Text>InProgress</Text>
+      
+          <View style={{
+          ...styles.flatListView,
+          }}>
+              <FlatList
+                  data={route.params.Data ? route.params.Data:[]}
+                  contentContainerStyle={{
+                      paddingBottom: 40,
+                  }}
+                  
+                  renderItem={({ item, index }) => {
+                      return (
+                          <View style={{
+                              ...styles.tabViewStyle,
+                          }}>
+                             
+                              {/* Time and Distance */}
+                              <View style={{
+                                  width: "100%",
+                                  height: 40,
+                                  flexDirection: "row",
+                                  justifyContent:"space-between",
+                                  alignItems: 'center',
+                              }}>
+                                           <Text style={{
+                                      fontSize: 18,
+                                      color: "#717171",
+                                      fontWeight: "500",
+                                      width: "50%",
+                                  }} numberOfLines={1}>Name:</Text>
+                                  <Text style={{
+                                      fontSize: 16,
+                                      color:'#000000',
+                                      fontWeight: "500",
+                                      width: "50%",
+                                      textAlign: "right",
+                                  }} numberOfLines={1}>{item.Name}</Text></View>
+
+                              {/* Price */}
+                              <View style={{
+                                  width: "100%",
+                                  height: 40,
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                  alignItems: 'center',
+                              }}>
+                                  {/* Price */}
+                                  
+                              </View>
+
+                              {/* Pickup view */}
+                              <View style={{
+                                  width: "100%",
+                                  marginTop: 10,
+                                  justifyContent: 'center',
+                              }}>
+                                  <View style={{
+                                      flexDirection: "row",
+                                      alignItems: 'center',
+                                  }}>
+                                      <FontAwesome name={"dot-circle-o"} size={20} color={'#982920'} />
+                                      <Text style={{
+                                          fontSize: 12,
+                                          color: "#787878",
+                                          marginLeft: 10,
+                                      }}>Pickup</Text>
+                                  </View>
+                               <Text style={{
+                                      fontSize: 14,
+                                      fontWeight: "500",
+                                      color: '#000000',
+                                      marginLeft: 26,
+                                  }} numberOfLines={1}>{item.pickup}</Text>
+                              </View>
+
+                              {/* Stop view List */}
+                              {item.stops.map((value, index) => 
+                                  <View key={value.id} style={{
+                                      width: "100%",
+                                      marginTop: 5,
+                                      justifyContent: 'center',
+                                  }}>
+                                      <View style={{
+                                          flexDirection: "row",
+                                          alignItems: 'center',
+                                      }}>
+                                          <Entypo name={"location-pin"} size={20} color={'#982920'} style={{ left: -1 }} />
+                                          <Text style={{
+                                              fontSize: 12,
+                                              color: "#787878",
+                                              marginLeft: 10,
+                                          }}>Stop</Text>
+                                      </View>
+                                      <Text style={{
+                                          fontSize: 14,
+                                          fontWeight: "500",
+                                          color:'#000000',
+                                          marginLeft: 26,
+                                      }} numberOfLines={1}>{value.stopName}</Text>
+                                  </View>
+                              )}
+                              
+                              {/* Dropoff view */}
+                              <View style={{
+                                  width: "100%",
+                                  marginTop: 5,
+                                  justifyContent: 'center',
+                              }}>
+                                  <View style={{
+                                      flexDirection: "row",
+                                      alignItems: 'center',
+                                  }}>
+                                      <FontAwesome name={"dot-circle-o"} size={20} color={'#000000'} />
+                                      <Text style={{
+                                          fontSize: 12,
+                                          color: "#787878",
+                                          marginLeft: 10,
+                                      }}>Dropoff</Text>
+                                  </View>
+                                  <Text style={{
+                                      fontSize: 14,
+                                      fontWeight: "500",
+                                      color: '#000000',
+                                      marginLeft: 26,
+                                  }} numberOfLines={1}>{item.dropoff}</Text>
+                              </View>
+
+                              <View style={{
+                                  width: "100%",
+                                  height: 45,
+                                  marginTop: 10,
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                              }}>
+                                  <Button
+                                      title={"Reject"}
+                                      buttonStyle={{
+                                          width: "48%",
+                                          height: "100%",
+                                      }}
+                                      onPress={() => {}}
+                                  />
+                                  <Button
+                                      title={"Accept"}
+                                      buttonStyle={{
+                                          width: "48%",
+                                          height: "100%",
+                                      }}
+                                      onPress={() => { this.props.navigation.navigate("DriverRideStart") }}
+                                  />
+                              </View>
+
+                          </View>
+                      )
+                  }}/>
+              
+              
           </View>
-        </View>
+     
+
       )}
     </View>
   );
@@ -200,7 +420,58 @@ const styles=StyleSheet.create({
     flexDirection:'column',
     justifyContent: 'center',
   },
-
+  container: {
+    backgroundColor: '#fffff',
+    width: "100%",
+    height: "100%",
+},
+mapStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+},
+sideBtnStyle:{
+    width: 50,
+    height: 50,
+    position: 'absolute',
+    bottom: "10%",
+    right: 15,
+  
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+},
+flatListView:{
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: "39%",
+    // backgroundColor: "red",
+},
+tabViewStyle:{
+    width:"90%",
+    padding:20,
+    backgroundColor:"#FFFFFF",
+    alignSelf: 'center',
+    borderRadius:10,
+    marginTop:10,
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+},
   mechanicName: {
     fontSize: 18,
     color:'black',

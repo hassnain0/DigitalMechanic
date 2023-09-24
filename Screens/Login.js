@@ -48,6 +48,7 @@ const checkUser=async(email)=>{
     const mechanicsCollection = db.collection('Registration');
     const querySnapshot = await mechanicsCollection.where('Email', '==', email).get();
 
+    
   // Check if there's a matching document
   if (!querySnapshot.empty) {
     // Assuming there's only one matching document
@@ -56,7 +57,7 @@ const checkUser=async(email)=>{
     // Access the "Identity" field from the document data
     const value = doc.data().Identity;
    
-    console.log(value);
+    
         if (doc.exists) {
        
           if(value=='Admin'){

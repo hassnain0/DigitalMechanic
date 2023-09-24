@@ -4,6 +4,7 @@ import Login from './Login';
 
 const  SplashScreen = ({navigation}) => {
 
+  
   useEffect(() => {
    setTimeout(() => {
       navigation.navigate('Login');

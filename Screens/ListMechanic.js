@@ -36,6 +36,7 @@ export default function ListMechanic({ navigation }) {
   );
  
   const handleAble = (mechanic) => {
+    
     const documentRef = db.collection('Registration').doc(mechanic.id);
     documentRef.update({
       Status:'Enabled',
@@ -71,20 +72,20 @@ export default function ListMechanic({ navigation }) {
     return true;
   }
   const handleDelete = (mechanic) => {
-    const documentToDelete = db.collection('Registration').doc(mechanic.id);
-
-// Delete the document
-documentToDelete.get().then((querySnapshot) => {
-  querySnapshot.forEach((doc) => {
-    doc.ref.delete().then(() => {
-      util.successMsg("Mechanic Deleted")
-      setDeleteCount((prev) => prev + 1); 
-    }).catch((error) => {
-      console.error('Error deleting document: ', error);
+    console.log(mechanic.email);
+  
+    const documentRef = db.collection('Registration').doc(mechanic.id);
+    documentRef.delete().then(() => {
+  
+    util.successMsg("Mechanic Sucessfully Deleted")
+          setDeleteCount((prev) => prev + 1); 
+    })
+    .catch((error) => {
+      console.error('Error updating mechanic:', error);
     });
-  });
-});
-  };
+
+};
+ 
   const renderItem = ({ item }) => (
   <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16 }}>
     

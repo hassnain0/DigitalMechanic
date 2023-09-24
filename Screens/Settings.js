@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView ,Image} from 'react-native';
-import { Switch, Button } from 'react-native-paper';
+import { Switch, Button, TextInput } from 'react-native-paper';
 import MainTextInput from '../components/MainTextInput';
 import Icon from '../helpers/Icons';
 import { Metrics } from '../themes';
@@ -21,7 +21,6 @@ const Settings = () => {
 
     useEffect(()=>{
       const fetchData = async () => {
-        
         try {
           const auth=getAuth();
           const email=auth.currentUser.email;
@@ -35,7 +34,7 @@ const Settings = () => {
           if (!querySnapshot.empty) {
             // If at least one matching document is found
             const data = querySnapshot.docs.map((doc) => doc.data());
-            console.log("data")
+           
             // Assuming the data contains a single document with the relevant information
             const firstData = data[0] || {};
             console.log("firstData",firstData)
@@ -114,7 +113,7 @@ const Settings = () => {
       </View>
 
       <View style={styles.section}>
-       
+
         <MainTextInput
           Icon={
             <Icon.FontAwesome5

@@ -8,16 +8,15 @@ import Locations from './Locations';
 import { useFocusEffect } from '@react-navigation/native';
 import util from '../helpers/util';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-
+import * as Location from 'expo-location';
+import axios from 'axios';
 
 const HomeUser=({navigation})=>{
 
     const [selectedServices, setSelectedServices] = useState(null);
     const [isDialogVisible, setDialogVisible] = useState(false);
-    const services = ['Oil Change', 'Brake Inspection', 'Flat tyre', 'Wheel Alignment','Battery Check','Air Filter Replacement','Cabin Air Filter Replacement','Transmission Service','Coolant Flush','Spark Plug Replacement','Timing Belt Replacement','Suspension Inspection','Fuel System Cleaning','Exhaust System Check','Radiator Check'
-    
-       ]; // Add other services as needed
- 
+    const services = ['Painter','Electrician','Flat Tire Mechanic','Key Maker','Denter','Auto Mechanic','Body-Mechanic']; // Add other services as needed
+   const [data,setData]=useState('');
        const [inputText, setInputText] = useState();
 
        const [showInput,setShowInput]=useState(false); 
@@ -110,7 +109,7 @@ navigation.navigate('CheckHistory')
       setShowInput(true)
     }
     
-    const handleServiceSelect = (selected) => {
+    const handleServiceSelect =async (selected) => {
       
 
         setSelectedServices(selected);
@@ -119,20 +118,44 @@ if(selectedServices==null){
   return false;
 }
         try{
-          const auth=getAuth();
-          const email=auth.currentUser.email;
-          const date=new Date().toLocaleDateString();
-          db.collection("RequestService").add({
-              
-            
-              myDate:date, 
-              Service:selectedServices,
-                Status:"Pending",
-                Email:email,
-               
-            }).then(()=>
-            setDialogVisible(false),
-            navigation.navigate("Locations")  )     
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            return;
+          }
+      
+          let location = await Location.getCurrentPositionAsync({});
+      
+          const latitude=location.coords.latitude;
+          const longitude=location.coords.longitude;
+
+          const data={
+            Latitude: '24.8787702',
+            Longitude: '66.87899999999999',
+            Specialties: ['Painter']
+          }
+          const url="https://zohaib964242.pythonanywhere.com/predict";
+          // Using axios:
+          try {
+           
+            const response = await axios.post(url,data);
+            console.log("response.data",response.data);
+      
+            if(response.data){
+              navigation.navigate("Locations",{
+                Data:response.data,
+              })
+            }
+            else{
+              setDialogVisible(false);
+              util.errorMsg("No Nearby Mechanic found");
+              return false;
+
+            }
+          } 
+          
+            catch (error) {
+            console.log(error)
+          }
            }
         catch(error){
             console.log(error)

@@ -1,5 +1,5 @@
 import React, { useEffect} from 'react';
-import {Alert,ImageBackground, BackHandler, StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
+import {Alert,ImageBackground,BackHandler, StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Request from './Requests';
 import Rating from './Rating';
@@ -47,8 +47,7 @@ const HomeMechanic=({navigation})=>{
       }, [])
           
       const logout = () => {
-       
-        auth
+          auth
           .signOut()
           .then(() => util.successMsg("Sucessfully Logout"));
           navigation.navigate("Login")

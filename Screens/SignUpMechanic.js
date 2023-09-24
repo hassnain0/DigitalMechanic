@@ -40,7 +40,8 @@ const SignUpMechanic=({navigation})=> {
     });
   };
 
-  
+ 
+  //React Hooks 
   React.useEffect(()=>{
   
     const unsubscribe=NetInfo.addEventListener(state=>{

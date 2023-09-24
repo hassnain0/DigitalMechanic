@@ -90,24 +90,29 @@ const SignUpUser=({navigation})=> {
         if(isConnected){
      createUserWithEmailAndPassword(auth,state.email,state.password).then(userCredentials=>{
         onRegisterApiCall();
-         navigation.navigate("Login") 
+      
      })
-     .catch(err => {
+     .catch((err) => {
+      console.log(err)
       if (err.code === 'auth/email-already-in-use') {
         util.errorMsg("Email Already in use")
+        return false;
+    
+      }
+      if (err.code === 'auth/wrong-password') {
+        util.errorMsg("Wrong Password")
+        return false;
     
       }
       if (err.code === 'auth/invalid-email') {
     util.errorMsg("Invalid Email");
-      }
-    
-      if (err.code === 'auth/email-already-in-use') {
-        util.errorMsg("Email Already in use")
+    return false;
       }
     });}
     
     else{
-      util.errorMsg("Please connect internet connection")
+      util.errorMsg("Please connect internet connection");
+      return false;
     }
 }  
   };
@@ -123,7 +128,9 @@ const SignUpUser=({navigation})=> {
         Phone2:state.phone2,
        VehcileDetails:state.vehcile,
         // Status:"Pending",
-       })
+       }).then(()=>{
+        navigation.navigate("Login") 
+       }).catch((error)=>console.log(error))
   
    resetForm();
    util.successMsg("Successfully Registered")

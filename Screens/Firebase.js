@@ -24,4 +24,4 @@ import 'firebase/compat/firestore';
 
    const auth=getAuth(app);
 
-   export  {db,auth,firebaseConfig,firebase};   
+   export  {db,auth,firebaseConfig};   

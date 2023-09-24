@@ -1,5 +1,13 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(DigitalMechanic) to use your location."
+        }
+      ]
+    ],
     "name": "DigitalMechanic",
     "slug": "DigitalMechanic",
     "version": "1.0.0",

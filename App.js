@@ -16,20 +16,32 @@ import SignUpUser from './Screens/SingUpUser';
 import ListMechanic from './Screens/ListMechanic'
 import ProvideService from './Screens/ProvideService'
 const Stack=createNativeStackNavigator();
+
 export default function App() {
  return (
    
   //Predefined Screen that are used in this app
     <NavigationContainer>
+       
     <Stack.Navigator >
-    <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown:false,statusBarColor:'#3A0A6A'}}/>
-    <Stack.Screen name='HomeUser' component={HomeUser} options={( ) => ({headerBackVisible:false, headerTitleAlign: 'center', title:'Digital  Mechanic App',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerTintColor:'white',headerStyle: {
+   <Stack.Screen name='Competetion' component={Competetion} options={( ) => ({headerTintColor:'black',title:'List Request',headerTitleAlign:'center',statusBarColor:'black',
+})}/> 
+
+   <Stack.Screen name='HomeUser' component={HomeUser} options={( ) => ({headerBackVisible:false, headerTitleAlign: 'center', title:'Digital  Mechanic App',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerTintColor:'white',headerStyle: {
           backgroundColor: '#3A0A6A', // Set your desired header color
         }, headerTitleContainerStyle: {
             top: 800, 
           }, headerTitleStyle: {
             fontWeight: '600',fontSize:20 ,
  } })}/>
+    <Stack.Screen name='Locations' component={Locations} options={() => ({title:'Nearby Locations',headerShown:false,statusBarColor:'#3A0A6A',headerStyle: {
+          backgroundColor: '#3A0A6A', // Set your desired header color
+        },
+        headerTintColor:'white'
+           
+      })}/>
+    <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown:false,statusBarColor:'#3A0A6A'}}/>
+   
     <Stack.Screen name='HomeAdmin' component={HomeAdmin} options={( ) => ({headerBackVisible:false,title:'Digital Mechanic App',headerTitleAlign:'center',statusBarColor:'#3A0A6A'
        ,   headerStyle: {
             backgroundColor: '#3A0A6A', // Set your desired header color
@@ -59,12 +71,7 @@ export default function App() {
 })}/> 
 <Stack.Screen name='ListMechanic' component={ListMechanic} options={( ) => ({headerTintColor:'black',title:'Pending List',headerTitleAlign:'center',statusBarColor:'#3A0A6A',
 })}/> 
-<Stack.Screen name='Locations' component={Locations} options={() => ({title:'Nearby Locations',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerStyle: {
-          backgroundColor: '#3A0A6A', // Set your desired header color
-        },
-        headerTintColor:'white'
-           
-      })}/>
+
       <Stack.Screen name='Settings' component={Settings} options={() => ({title:'Profile Management',headerTitleAlign:'center',statusBarColor:'#3A0A6A',headerStyle: {
           backgroundColor: '#3A0A6A', // Set your desired header color
         },
