@@ -10,9 +10,12 @@ import util from '../helpers/util';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import * as Location from 'expo-location';
 import axios from 'axios';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const HomeUser=({navigation})=>{
 
+
+    const [loading,setLoading]=useState(false);
     const [selectedServices, setSelectedServices] = useState(null);
     const [isDialogVisible, setDialogVisible] = useState(false);
     const services = ['Painter','Electrician','Flat Tire Mechanic','Key Maker','Denter','Auto Mechanic','Body-Mechanic']; // Add other services as needed
@@ -110,42 +113,43 @@ navigation.navigate('CheckHistory')
     }
     
     const handleServiceSelect =async (selected) => {
-      
-
-        setSelectedServices(selected);
+      setLoading(true);
+//       setSelectedServices(selected);
        
-if(selectedServices==null){
-  return false;
-}
+// if(selectedServices==null){
+//   return false;
+// }
         try{
-          let { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== 'granted') {
-            return;
-          }
+          // let { status } = await Location.requestForegroundPermissionsAsync();
+          // if (status !== 'granted') {
+          //   return;
+          // }
       
-          let location = await Location.getCurrentPositionAsync({});
+          // let location = await Location.getCurrentPositionAsync({});
       
-          const latitude=location.coords.latitude;
-          const longitude=location.coords.longitude;
+          // const latitude=location.coords.latitude;
+          // const longitude=location.coords.longitude;
 
           const data={
-            Latitude: '24.8787702',
-            Longitude: '66.87899999999999',
-            Specialties: ['Painter']
-          }
+            Latitude: "24.8787702",
+            Longitude: "66.87899999999999",
+            Specialties: ["Painter","Denter"]          }
           const url="https://zohaib964242.pythonanywhere.com/predict";
+    
           // Using axios:
           try {
            
             const response = await axios.post(url,data);
-            console.log("response.data",response.data);
-      
+           
             if(response.data){
+              
               navigation.navigate("Locations",{
                 Data:response.data,
               })
+              setLoading(false);
             }
             else{
+              setLoading(false);
               setDialogVisible(false);
               util.errorMsg("No Nearby Mechanic found");
               return false;
@@ -209,6 +213,12 @@ if(selectedServices==null){
         services={services}
         onServiceSelect={handleServiceSelect}
       />
+        <Spinner
+          visible={loading}
+          size={'large'}
+          textContent={'Loading...'}
+          textStyle={{ color: '#FFF' }}
+        />
     <View style={styles.rowContainer}>
                 <View style={styles.cardContainer}>
                   <Image
