@@ -37,8 +37,7 @@ const Settings = () => {
            
             // Assuming the data contains a single document with the relevant information
             const firstData = data[0] || {};
-            console.log("firstData",firstData)
-            // Populate the state with data from Firebase
+           
             setState((prevState) => ({
               ...prevState,
         
@@ -107,7 +106,7 @@ const Settings = () => {
     return (
     <ScrollView style={styles.container}>
       <View style={styles.userContainer}>
-        <Image source={require("../assets/Icon.png")} style={styles.userImage} />
+        <Image source={require("../assets/icon.png")} style={styles.userImage} />
                     
         
       </View>
