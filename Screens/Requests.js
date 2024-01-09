@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { db } from "./Firebase";
+import ViewMap from "./ViewMap";
 
 
 const Request=() => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [mapShown,setMapShown]=useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const querySnapshot = await db
           .collection("RequestService")
-          .where("Status", "==", "Pending")
+          .where("Status", "==", "pending")
           .get();
-
+    
         if (!querySnapshot.empty) {
           // If at least one matching document is found
           const data = querySnapshot.docs.map((doc) => doc.data());
+          
           setHistoryData(data);
         } else {
           // If no matching documents are found
@@ -34,16 +36,33 @@ const Request=() => {
     fetchData();
   }, []);
 
+  const ShowMap=()=>{
+    setMapShown(true)
+  }
+  const handleCloseDialog=()=>{
+    setMapShown(false)
+  }
   // Render each item in the history list
   const renderHistoryItem = ({ item }) => (
+    
     <View style={styles.historyItem}>
+       
       <Text style={styles.work}>{item.myDate}</Text>
+      
       <Text style={styles.work}>{item.Service}</Text>
+ <TouchableOpacity onPress={ShowMap}>
+<Text style={{textAlign:'center'}} >View</Text>
+   </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      <ViewMap
+        visible={mapShown}
+        onClose={handleCloseDialog}
+        
+      />
       <Text style={styles.title}>Request for services</Text>
       <View style={styles.centeredContainer}>
         {loading ? (
@@ -78,16 +97,15 @@ const styles = StyleSheet.create({
   },
   centeredContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+
   },
   historyList: {
     flex: 1,
   },
   historyItem: {
     backgroundColor: "#fff",
-    padding: 16,
-    marginBottom: 10,
+    padding: 10,
+    marginBottom: 5,
     borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: {
@@ -107,6 +125,7 @@ const styles = StyleSheet.create({
   work: {
     fontSize: 16,
     color: "#333",
+    textAlign:'center'
   },
 });
 

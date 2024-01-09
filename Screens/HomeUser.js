@@ -75,7 +75,8 @@ const HomeUser = ({ navigation }) => {
     setDialogVisible(false);
   };
   const RequestMethod = () => {
-    setDialogVisible(true);
+    // setDialogVisible(true);
+    navigation.navigate("Locations")
   }
   const CheckHistory = () => {
     navigation.navigate('CheckHistory')
@@ -114,60 +115,58 @@ const HomeUser = ({ navigation }) => {
   }
 
   const handleServiceSelect = async (selected) => {
-    setLoading(true);
-          setSelectedServices(selected);
+    // setLoading(true);
+    // setSelectedServices(selected);
 
-    if(selectedServices==null){
-      return false;
-    }
+    // if (selectedServices == null) {
+    //   setLoading(false);
+    //   return false;
+    
+    // }
     try {
+
+      // // let { status } = await Location.requestForegroundPermissionsAsync();
+      // // if (status !== 'granted') {
+      // //   return;
+      // // }
+
+      // let location = await Location.getCurrentPositionAsync({});
+
+      // const latitude = location.coords.latitude;
+      // const longitude = location.coords.longitude;
+
+      // console.log("Services Selected", services)
+      // const data ={
+      //   "Latitude": "24.8787702",
+      //   "Longitude": "66.87899999999999",
+      //   "Specialties": ["Painter", "Denter"]
+      // }
+      // const url = "https://locationapi-i75f.onrender.com/";
+ 
+
+      //   const response = await axios.post(url, data);
+
+      //   if (response.data) {
+
+      //     console.log("Datra",response.data)
+         
+      //     setLoading(false);
+      //   }
+      //   else {
+      //     setLoading(false);
+      //     setDialogVisible(false);
+      //     util.errorMsg("No Nearby Mechanic found");
+      //     return false;
+
+      //   }
+      navigation.navigate("Locations")
       
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        return;
       }
-
-      let location = await .getCurrentPositionAsync({});
-
-      const latitude=location.coords.latitude;
-      const longitude=location.coords.longitude;
-
-      console.log("Services Selected",services)
-      const data = {
-        Latitude: latitude,
-        Longitude: longitude,
-        Specialties: ["Painter", "Denter"]
-      }
-      const url = "https://zohaib964242.pythonanywhere.com/predict";
-
-      // Using axios:
-      try {
-
-        const response = await axios.post(url, data);
-
-        if (response.data) {
-
-          navigation.navigate("Locations", {
-            Data: response.data,
-          })
-          setLoading(false);
-        }
-        else {
-          setLoading(false);
-          setDialogVisible(false);
-          util.errorMsg("No Nearby Mechanic found");
-          return false;
-
-        }
-      }
-
       catch (error) {
-        console.log(error)
+        setLoading(false)
+        console.log(error.message)
       }
-    }
-    catch (error) {
-      console.log(error)
-    }
+
   };
   useEffect(() => {
     navigation.setOptions({

@@ -153,19 +153,23 @@ return false;
      .catch(err => {
       if (err.code === 'auth/email-already-in-use') {
         util.errorMsg("Email Already in use")
+        setLoader(false)
     
       }
       if (err.code === 'auth/invalid-email') {
     util.errorMsg("Invalid Email");
+    setLoader(false)
       }
     
       if (err.code === 'auth/email-already-in-use') {
         util.errorMsg("Email Already in use")
+        setLoader(false)
       }
     });}
     
     else{
       util.errorMsg("Please connect internet connection")
+      setLoader(false)
     }
 }  
   };
