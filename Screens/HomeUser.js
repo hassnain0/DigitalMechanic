@@ -75,8 +75,8 @@ const HomeUser = ({ navigation }) => {
     setDialogVisible(false);
   };
   const RequestMethod = () => {
-    // setDialogVisible(true);
-    navigation.navigate("Locations")
+    setDialogVisible(true);
+    // navigation.navigate("Locations")
   }
   const CheckHistory = () => {
     navigation.navigate('CheckHistory')
@@ -115,14 +115,14 @@ const HomeUser = ({ navigation }) => {
   }
 
   const handleServiceSelect = async (selected) => {
-    // setLoading(true);
-    // setSelectedServices(selected);
+    setLoading(true);
+    setSelectedServices(selected);
 
-    // if (selectedServices == null) {
-    //   setLoading(false);
-    //   return false;
+    if (selectedServices == null) {
+      setLoading(false);
+      return false;
     
-    // }
+    }
     try {
 
       // // let { status } = await Location.requestForegroundPermissionsAsync();
@@ -136,31 +136,31 @@ const HomeUser = ({ navigation }) => {
       // const longitude = location.coords.longitude;
 
       // console.log("Services Selected", services)
-      // const data ={
-      //   "Latitude": "24.8787702",
-      //   "Longitude": "66.87899999999999",
-      //   "Specialties": ["Painter", "Denter"]
-      // }
-      // const url = "https://locationapi-i75f.onrender.com/";
+      const data ={
+    "Latitude":"24.8787702",
+    "Longitude":"66.8788",
+    "Specialties":["Painter","Denter"]
+}
+      const url = "https://locationapi-i75f.onrender.com/predict";
  
 
-      //   const response = await axios.post(url, data);
+        const response = await axios.post(url, data);
+console.log("Response",response)
+        if (response.data) {
+          const data=response.data
+            setLoading(false);
+            navigation.navigate("Locations",{
+              data
+            })
+        }
+        else {
+          setLoading(false);
+          setDialogVisible(false);
+          util.errorMsg("No Nearby Mechanic found");
+          return false;
 
-      //   if (response.data) {
-
-      //     console.log("Datra",response.data)
-         
-      //     setLoading(false);
-      //   }
-      //   else {
-      //     setLoading(false);
-      //     setDialogVisible(false);
-      //     util.errorMsg("No Nearby Mechanic found");
-      //     return false;
-
-      //   }
-      navigation.navigate("Locations")
-      
+        }
+     
       }
       catch (error) {
         setLoading(false)

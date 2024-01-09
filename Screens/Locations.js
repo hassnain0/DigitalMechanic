@@ -6,25 +6,21 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { db } from './Firebase';
 import util from '../helpers/util';
 import Toast from 'react-native-toast-message';
+import { useRoute } from '@react-navigation/native';
 
-const Locations=({route})=>{
+const Locations=()=>{
 
    const mapRef=useRef(null)
    const [markerShown,setMarkerShown]=useState(true)
    const screen=Dimensions.get('window')
    const ASPECT_RATIO=screen.width/screen.height;
    const LATITUDE_DELTA=0.9222;
-  const LONGITUDE_DELTA=LATITUDE_DELTA*ASPECT_RATIO;
-   const [data,setData]=useState(''); 
+   const LONGITUDE_DELTA=LATITUDE_DELTA*ASPECT_RATIO;
    const [MechanicList,setMechanicList]=useState('');
-// useEffect(()=>{
-//   const Data=route.params.Data
-//   console.log(Data)
-// setData(Data);
-//   // Function to fetch data from Firestore and add to mechanicsDa
- 
-// },[])
-   
+
+   const route=useRoute();
+   const data=route.params.data
+   console.log("data",data)
 const Request = async ()=> {
   
   await db.collection("RequestService").add({
@@ -59,22 +55,17 @@ const MarkerPressed = () => {
     <View style={styles.container}>
       <MapView
       
-        ref={mapRef}
-        maxZoomLevel={18}
+       
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         
         showsIndoors={true}
-        initialRegion={{
-          latitude: 24.9157,
-          longitude: 67.0921,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        }}
+       
       >
           {data &&
-          data.length > 0 &&
+          
           data.map((marker, index) => (
+            
             <Marker
               key={index}
               coordinate={{
