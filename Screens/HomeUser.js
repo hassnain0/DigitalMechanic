@@ -121,7 +121,7 @@ const HomeUser = ({ navigation }) => {
     if (selectedServices == null) {
       setLoading(false);
       return false;
-    
+
     }
     try {
 
@@ -136,36 +136,36 @@ const HomeUser = ({ navigation }) => {
       // const longitude = location.coords.longitude;
 
       // console.log("Services Selected", services)
-      const data ={
-    "Latitude":"24.8787702",
-    "Longitude":"66.8788",
-    "Specialties":["Painter","Denter"]
-}
+      const data = {
+        "Latitude": "24.8787702",
+        "Longitude": "66.8788",
+        "Specialties": ["Painter", "Denter"]
+      }
       const url = "https://locationapi-i75f.onrender.com/predict";
- 
 
-        const response = await axios.post(url, data);
-console.log("Response",response)
-        if (response.data) {
-          const data=response.data
-            setLoading(false);
-            navigation.navigate("Locations",{
-              data
-            })
-        }
-        else {
-          setLoading(false);
-          setDialogVisible(false);
-          util.errorMsg("No Nearby Mechanic found");
-          return false;
 
-        }
-     
+      const response = await axios.post(url, data);
+      console.log("Response", response)
+      if (response.data) {
+        const data = response.data
+        setLoading(false);
+        navigation.navigate("Locations", {
+          data
+        })
       }
-      catch (error) {
-        setLoading(false)
-        console.log(error.message)
+      else {
+        setLoading(false);
+        setDialogVisible(false);
+        util.errorMsg("No Nearby Mechanic found");
+        return false;
+
       }
+
+    }
+    catch (error) {
+      setLoading(false)
+      console.log(error.message)
+    }
 
   };
   useEffect(() => {

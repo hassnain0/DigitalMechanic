@@ -54,8 +54,8 @@ const MarkerPressed = () => {
   return (
     <View style={styles.container}>
       <MapView
-      
-       
+     
+       ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         
@@ -63,16 +63,16 @@ const MarkerPressed = () => {
        
       >
           {data &&
-          
           data.map((marker, index) => (
-            
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: marker.Latitude, // Use the correct key from your data
-                longitude: marker.Longitude, // Use the correct key from your data
-              }}
-              title={marker.Address}
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: marker.Latitude,
+                  longitude: marker.Longitude,
+                }}
+                title={marker.Name}
+                description={`Specialty: ${marker.Specialty}`}
+              
               onPress={() => {
                 showDetails(marker);
                 // Implement your logic to show details here
