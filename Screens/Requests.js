@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import { db } from "./Firebase";
 import ViewMap from "./ViewMap";
 
 
-const Request=() => {
+const Request = () => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mapShown,setMapShown]=useState(false);
-  const [locationData,setLocationData]=useState();
+  const [mapShown, setMapShown] = useState(false);
+  const [locationData, setLocationData] = useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const querySnapshot = await db
           .collection("RequestService")
-          .where("Status","==", "Pending")
+          .where("Status", "==", "Pending")
           .get();
-    
+
         if (!querySnapshot.empty) {
-          // If at least one matching document is found
+
           const data = querySnapshot.docs.map((doc) => doc.data());
-          
+
           setHistoryData(data);
         } else {
-          // If no matching documents are found
+
           setHistoryData([]);
         }
 
@@ -37,55 +37,61 @@ const Request=() => {
     fetchData();
   }, []);
 
-  const ShowMap=({item})=>{
-    setLoading(true);
-    console.log("Data Found",item)
-    setLocationData(item)
-    setMapShown(true)
-    setLoading(false)
+
+  const handleCloseDialog = () => {
+    setMapShown(false);
   }
-  const handleCloseDialog=()=>{
-    setMapShown(false)
-  }
-  
-  // Render each item in the history list
-  const renderHistoryItem = ({ item }) => (
+  const ShowMap = (item) => {
     
-    <View style={styles.historyItem}>
-       
-      <Text style={styles.work}>{item.ID_Number}</Text>
-      <Text style={{color:'black',textAlign:'center'}}>{item.email}</Text>
-      <Text style={{color:'green',textAlign:'center'}}>{item.Status}</Text>
- <TouchableOpacity onPress={ShowMap(item)}>
-<Text style={{textAlign:'center'}} >View</Text>
-   </TouchableOpacity>
-    </View>
-  );
+    console.log("Item",item)
+    setLocationData(item) 
+    setMapShown(true)
+   
+    
+  }
 
   return (
-    <View style={styles.container}>
-     
+    <View style={styles.container} >
+
       <Text style={styles.title}>Request for services</Text>
       <View style={styles.centeredContainer}>
+     
         {loading ? (
           <Text>Loading...</Text>
         ) : historyData.length === 0 ? (
           <Text>No record found</Text>
         ) : (
-          
-          <FlatList
-            data={historyData}
-            renderItem={renderHistoryItem}
-            keyExtractor={(item) => item.id}
-            style={styles.historyList}
-          />
+          <>
+            {historyData && historyData.length > 0 && (
+              <FlatList
+                data={historyData}
+                renderItem={({ item }) => (
+                  <View style={styles.historyItem}>
+
+                    <Text style={styles.work}>{item.ID_Number}</Text>
+                    <Text style={{ color: 'black', textAlign: 'center' }}>{item.email}</Text>
+                    <Text style={{ color: 'green', textAlign: 'center' }}>{item.Status}</Text>
+                    <TouchableOpacity onPress={()=> ShowMap(item)}>
+                      <Text style={{ textAlign: 'center' }} >View</Text>
+                    </TouchableOpacity>
+                    <ViewMap
+          data={locationData}
+          visible={mapShown}
+          onClose={handleCloseDialog}
+        />
+                  </View>
+                  
+                )}
+                keyExtractor={(item) => item.id}
+                style={styles.historyList}
+              />
+              
+            )}
+            
+          </>
         )}
-        
-         <ViewMap
-         data={locationData}
-        visible={mapShown}
-        onClose={handleCloseDialog}
-      />
+
+      
       </View>
     </View>
   );
@@ -134,7 +140,7 @@ const styles = StyleSheet.create({
   work: {
     fontSize: 16,
     color: "#333",
-    textAlign:'center'
+    textAlign: 'center'
   },
 });
 

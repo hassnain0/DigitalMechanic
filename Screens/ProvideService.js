@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { db, } from "./Firebase";
-
+import firebase  from "firebase/compat";
 const ProvideService= () => {
   const [loading, setLoading] = useState(true);
   const [specialties, setSpecialties] = useState([]);
@@ -9,8 +9,9 @@ const ProvideService= () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const email=firebase.auth().currentUser.email;
       const querySnapshot = await db
-          .collection("Registration").where("Identity",'==',"Mechanic")
+          .collection("Registration").where("Identity",'==',"Mechanic").where("Email",'==',email)
           .get()
          
         if (!querySnapshot.empty) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Image, TextInput, StyleSheet, View, Text, TouchableOpacity, Alert, ScrollView, BackHandler, Modal, ImageBackground } from 'react-native'
 import { Metrics } from '../themes'
 import CustomDialog from './CustomDialog';
-import { auth, db, firebase } from './Firebase';
+import { auth, db, } from './Firebase';
 import { getAuth, } from 'firebase/auth';
 import Locations from './Locations';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,7 +11,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import firebase from 'firebase/compat';
 const HomeUser = ({ navigation }) => {
 
 
@@ -29,10 +29,14 @@ const HomeUser = ({ navigation }) => {
   }
 
   const handleConfirm = async () => {
+    if (util.errorMsg(inputText)) {
+      util.errorMsg("Please input")
+      return false;
+    }
     try {
-      const date = new Date().toLocaleDateString();
+  const email=firebase.auth().currentUser.email;
       await db.collection("Feedback").add({
-        myDate: date,
+        email:email,
         Feedback: inputText,
       }).then(() => {
         setInputText('');
@@ -81,35 +85,36 @@ const HomeUser = ({ navigation }) => {
     navigation.navigate('CheckHistory')
   }
 
-  const Cancel = () => {
-    const userEmail = getAuth().currentUser.email;
-    db.collection("RequestService").where("Status", '==', 'Pending')
-      .where("Email", "==", userEmail)
+  const Cancel = async () => {
+    const email = firebase.auth().currentUser.email;
+    await db.collection('RequestService')
+      .where("email", '==', email)  // Adjust this condition based on your use case
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          console.log(querySnapshot)
-          // Use the entire state object to update the document
-          db.collection("RequestService")
-            .doc(doc.id)
-            .update({
-              Status: "Deleted"
-            })
-            .then(() => {
+          // Get the document data
 
-              util.successMsg(" Request  deleted")
+          // Get the document ID
+          const documentId = doc.id;
+
+          // Update the field
+          db.collection('RequestService').doc(documentId).update({
+            Status: "Cancelled"
+          })
+            .then(() => {
+              util.successMsg("Successfully Cancelled")
+
             })
             .catch((error) => {
-              console.error("Error updating document:", error);
+              console.error('Error updating document: ', error);
             });
         });
       })
-
       .catch((error) => {
-        console.error("Error fetching document:", error);
+        console.error('Error getting documents: ', error);
       });
   }
-  const RateFeedback = () => {
+  const RateFeedback = async () => {
     setShowInput(true)
   }
 
