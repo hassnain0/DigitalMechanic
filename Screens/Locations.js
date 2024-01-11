@@ -1,78 +1,93 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {Text, StyleSheet, View ,Dimensions,FlatList,Button} from 'react-native';
+import { Text, StyleSheet, View, Dimensions, FlatList, Button, Image } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import MapView, { Marker, PROVIDER_GOOGLE,} from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { db } from './Firebase';
 import util from '../helpers/util';
 import Toast from 'react-native-toast-message';
 import { useRoute } from '@react-navigation/native';
+import firebase from 'firebase/compat';
+import * as Location from 'expo-location';
+const Locations = () => {
 
-const Locations=()=>{
+  const mapRef = useRef(null)
 
-   const mapRef=useRef(null)
-   const [markerShown,setMarkerShown]=useState(true)
-   const screen=Dimensions.get('window')
-   const ASPECT_RATIO=screen.width/screen.height;
-   const LATITUDE_DELTA=0.9222;
-   const LONGITUDE_DELTA=LATITUDE_DELTA*ASPECT_RATIO;
-   const [MechanicList,setMechanicList]=useState('');
+  const [markerShown, setMarkerShown] = useState(false)
+  const screen = Dimensions.get('window')
+  const ASPECT_RATIO = screen.width / screen.height;
+  const LATITUDE_DELTA = 0.9222;
+  const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+  const [MechanicList, setMechanicList] = useState('');
 
-   const route=useRoute();
-   const data=route.params.data
-   console.log("data",data)
-const Request = async ()=> {
+  const route = useRoute();
+  const data = route.params.data
+  const showDetails = (marker) => {
+    console.log("markwer", marker);
+    setMechanicList(marker)
+
+    setMarkerShown((prevMarkerShown) => {
+
+      return true;                  // Return the new state value
+    });
+    console.log(marker)
+  }
+
+  const cancel=()=>{
+    setMarkerShown(false)
+  }
+
+  const SendReq = async () => {
+    const email=firebase.auth().currentUser.email;
+    console.log("Email",email)
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
+
+    await db.collection('RequestService').add({
+     Latitude:latitude,
+     Longitude:longitude,
+      email:email,
+      ID_Number: 1234,
+      Specialty:'Tyre Puncture',
+      Status: 'Pending',
+    }).then(() => {
+      setMarkerShown(false)
+      util.successMsg("Request Successfully Sent");
+    })
+      .catch((error) => {
+        console.error('Error updating Req:', error.message);
+      });
+  }
   
-  await db.collection("RequestService").add({
-      Request:"Pending",
-      // Status:"Pending",
-     }).then(()=>{
-     util.successMsg("Request Sucessfully Sent");
-     setLoader(false);
-     }).catch((error)=>console.log(error))
-};
-const showDetails=(marker)=>
-{
-  setMechanicList(marker)
-  setMarkerShown(true)  
-}
-
-const renderMechanicItem = ({ item }) => {
- 
-  // Function to open the dial pad with the provided phone number
-  const handleCallPress = () => {
-    if (item.phoneNumber) {
-      Linking.openURL(`tel:${item.phoneNumber}`);
-    }
-  };
-}
-    
-const MarkerPressed = () => {
-  db.collection("RequestService").add
-  setMarkerShown(!markerShown);
-};
   return (
     <View style={styles.container}>
       <MapView
-     
-       ref={mapRef}
+
+        ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        
+
         showsIndoors={true}
-       
+
       >
-          {data &&
+        {data &&
           data.map((marker, index) => (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: marker.Latitude,
-                  longitude: marker.Longitude,
-                }}
-                title={marker.Name}
-                description={`Specialty: ${marker.Specialty}`}
-              
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.Latitude,
+                longitude: marker.Longitude,
+              }}
+              title={marker.Name}
+              description={`Specialty: ${marker.Specialty}`}
+
               onPress={() => {
                 showDetails(marker);
                 // Implement your logic to show details here
@@ -81,150 +96,185 @@ const MarkerPressed = () => {
           ))}
       </MapView>
       {markerShown && (
-      
-          <View style={{
+
+        <View style={{
           ...styles.flatListView,
-          }}>
-              <FlatList
-                  data={MechanicList}
-                  contentContainerStyle={{
-                  paddingBottom: 40,
-                  }}
-                  
-                  renderItem={({ item, index }) => {
-                      return (
-                          <View style={{
-                              ...styles.tabViewStyle,
-                          }}>
-                             
-                              {/* Time and Distance */}
-                              <View style={{
-                                  width: "100%",
-                                  height: 40,
-                                  flexDirection: "row",
-                                  justifyContent:"space-between",
-                                  alignItems: 'center',
-                              }}>
-                                           <Text style={{
-                                      fontSize: 18,
-                                      color: "#717171",
-                                      fontWeight: "500",
-                                      width: "50%",
-                                  }} numberOfLines={1}>Name:</Text>
-                                  <Text style={{
-                                      fontSize: 16,
-                                      color:'#000000',
-                                      fontWeight: "500",
-                                      width: "50%",
-                                      textAlign: "right",
-                                  }} numberOfLines={1}>{item.Name}</Text></View>
+        }}>
+          <FlatList
+            data={[MechanicList]}
+            contentContainerStyle={{
+              paddingBottom: 40,
+            }}
 
-                                         <Image
-                                                source={{ uri:'https://www.pinkvilla.com/images/2023-01/1674581250_pexels-jhosua-rodriguez-2465327.jpg' }}
-                                                style={{
-                                                    width: 40,
-                                                    height: 40,
-                                                    borderRadius: 100,
-                                                }}
-                                            />
-                              {/* Price */}
-                              <View style={{
-                                  width: "100%",
-                                  height: 40,
-                                  flexDirection: "row",
-                                  justifyContent: "space-between",
-                                  alignItems: 'center',
-                              }}>
-                                  {/* Price */}
-                                  
-                              </View>
+            renderItem={({ item, index }) => {
+              return (
+                <View style={{
+                  ...styles.tabViewStyle,
+                }}>
 
-                              {/* Pickup view */}
-                              <View style={{
-                                  width: "100%",
-                                  marginTop: 10,
-                                  justifyContent: 'center',
-                              }}>
-                                  <View style={{
-                                      flexDirection: "row",
-                                      alignItems: 'center',
-                                  }}>
-                                      <FontAwesome name={"dot-circle-o"} size={20} color={'#982920'} />
-                                      <Text style={{
-                                          fontSize: 12,
-                                          color: "#787878",
-                                          marginLeft: 10,
-                                      }}>Pickup</Text>
-                                  </View>
-                               {/* <Text style={{
-                                      fontSize: 14,
-                                      fontWeight: "500",
-                                      color: '#000000',
-                                      marginLeft: 26,
-                                  }} numberOfLines={1}>{item.pickup}</Text> */}
-                              </View>
+                  {/* Time and Distance */}
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    <Image
+                      source={{ uri: 'https://www.pinkvilla.com/images/2023-01/1674581250_pexels-jhosua-rodriguez-2465327.jpg' }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 100,
+                      }}
+                    />
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+                      width: "50%",
+                      textAlign: "right",
+                    }} numberOfLines={1}>{item.Name}</Text>
 
-                              {/* Stop view List */}
-                              
-                              {/* Dropoff view */}
-                              <View style={{
-                                  width: "100%",
-                                  marginTop: 5,
-                                  justifyContent: 'center',
-                              }}>
-                                  <View style={{
-                                      flexDirection: "row",
-                                      alignItems: 'center',
-                                  }}>
-                                      <FontAwesome name={"dot-circle-o"} size={20} color={'#000000'} />
-                                      <Text style={{
-                                          fontSize: 12,
-                                          color: "#787878",
-                                          marginLeft: 10,
-                                      }}>Address</Text>
-                                  </View>
-                                  <Text style={{
-                                      fontSize: 14,
-                                      fontWeight: "500",
-                                      color: '#000000',
-                                      marginLeft: 26,
-                                  }} numberOfLines={1}>{item.Address}</Text>
-                              </View>
 
-                              <View style={{
-                                  width: "100%",
-                                  height: 45,
-                                  marginTop: 10,
-                                  flexDirection: "row",
-                                  justifyContent: "space-between",
-                              }}>
-                                  <Button
-                                      title={"Reject"}
-                                      buttonStyle={{
-                                          width: "48%",
-                                          height: "100%",
-                                      }}
-                                      onPress={() => {}}
-                                  />
-                                  <Button
-                                        title={"Accept"}
-                                         buttonStyle={{
-                                          width: "48%",
-                                          height: "100%",
-                                      }}
-                                      onPress={() => { console.log("Done") }}
-                                  />
-                              </View>
-                          </View>
-                          )
-                  }}/>
-          </View>
+                  </View>
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "left",
+                    }} numberOfLines={1}>Specialties</Text>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "right",
+                    }} numberOfLines={1}>{item.Specialty}</Text>
+                  </View>
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "left",
+                    }} numberOfLines={1}>Phone Number</Text>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "right",
+                    }} numberOfLines={1}>{item.Phone_Number}</Text>
+                  </View>
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "left",
+                    }} numberOfLines={1}>ID Number</Text>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "right",
+                    }} numberOfLines={1}>{item.ID_Number}</Text>
+                  </View>
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "left",
+                    }} numberOfLines={1}>Address</Text>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "right",
+                    }} numberOfLines={1}>{item.Address}</Text>
+                  </View>
+                  {/* Price */}
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    {/* Price */}
+
+                  </View>
+
+                  <View style={{
+                    width: "100%",
+                    height: 45,
+                    marginTop: 10,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}>
+                    <Button
+                      title={"Cancel"}
+                      buttonStyle={{
+                        width: "48%",
+                        height: "100%",
+                      }}
+                      color={'red'}
+                      onPress={cancel}
+                    />
+                    <Button
+                      title={"Done"}
+                      buttonStyle={{
+                        width: "48%",
+                        height: "100%",
+                      }}
+                      color={'green'}
+                      onPress={SendReq}
+                    />
+
+                  </View>
+                </View>
+              )
+            }} />
+        </View>
       )}
-      <Toast ref={(ref)=>Toast.setRef(ref)}/>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );
 };
-const styles=StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
@@ -232,7 +282,7 @@ const styles=StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-  },  flatListContent: {
+  }, flatListContent: {
     flexGrow: 1, // Make the content take all available space
   },
   TouchContainer: {
@@ -243,17 +293,17 @@ const styles=StyleSheet.create({
     alignItems: 'center',
     height: 48,
     justifyContent: 'center',
-    marginTop:16,
+    marginTop: 16,
     borderColor: 'white',
   },
   BottomCard: {
     backgroundColor: 'white',
     width: '100%',
-    paddingRight:10,
-    paddingBottom:(250),
+    paddingRight: 10,
+    paddingBottom: (250),
     borderTopEndRadius: 24,
     borderTopStartRadius: 24,
-  }, 
+  },
   mechanicItem: {
     flexDirection: 'column',
     padding: 10,
@@ -270,64 +320,64 @@ const styles=StyleSheet.create({
 
   mechanicDetails: {
     flex: 1,
-    flexDirection:'column',
+    flexDirection: 'column',
     justifyContent: 'center',
   },
   container: {
     backgroundColor: '#fffff',
     width: "100%",
     height: "100%",
-},
-mapStyle: {
+  },
+  mapStyle: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-},
-sideBtnStyle:{
+  },
+  sideBtnStyle: {
     width: 50,
     height: 50,
     position: 'absolute',
     bottom: "10%",
     right: 15,
-  
+
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     shadowOffset: {
-        width: 0,
-        height: 2
+      width: 0,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-},
-flatListView:{
+  },
+  flatListView: {
     position: "absolute",
     bottom: 0,
     width: "100%",
     height: "39%",
     // backgroundColor: "red",
-},
-tabViewStyle:{
-    width:"90%",
-    padding:20,
-    backgroundColor:"#FFFFFF",
+  },
+  tabViewStyle: {
+    width: "90%",
+    padding: 20,
+    backgroundColor: "#FFFFFF",
     alignSelf: 'center',
-    borderRadius:10,
-    marginTop:10,
+    borderRadius: 10,
+    marginTop: 10,
     shadowOffset: {
-        width: 0,
-        height: 2
+      width: 0,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-},
+  },
   mechanicName: {
     fontSize: 18,
-    color:'black',
+    color: 'black',
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -345,7 +395,7 @@ tabViewStyle:{
   mechanicShopDetails: {
     color: '#888',
   },
-  
+
   input: {
     color: 'grey',
     height: 30,

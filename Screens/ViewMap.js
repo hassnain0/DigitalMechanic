@@ -9,7 +9,7 @@ import {
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Toast from "react-native-toast-message";
 
-const ViewMap = ({ visible, onClose, }) => {
+const ViewMap = ({ visible, onClose,data }) => {
   const screen = Dimensions.get('window')
   const ASPECT_RATIO = screen.width / screen.height;
   const LATITUDE_DELTA = 0.9222;
@@ -28,6 +28,7 @@ const ViewMap = ({ visible, onClose, }) => {
   const handleDecline = () => {
     onClose();
   };
+  console.log("Data",data)
   return (
     <View style={styles.container}>
       <Modal
@@ -42,8 +43,8 @@ const ViewMap = ({ visible, onClose, }) => {
           provider={PROVIDER_GOOGLE}
           style={StyleSheet.absoluteFillObject}
           showsIndoors={true}
-          initialRegion={{ latitude: 24.9157, longitude: 67.0921, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, }}>
-          <Marker coordinate={UserLocation} />
+          initialRegion={UserLocation}>
+          {/* <Marker coordinate={{latitude: data?.latitude, longitude: data?.longitude, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA}} /> */}
         </MapView>
         <View style={styles.buttonContainer}>
           <Button title="Accept" color={"green"} onPress={handleAccept} />

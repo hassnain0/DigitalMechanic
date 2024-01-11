@@ -8,12 +8,13 @@ const Request=() => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mapShown,setMapShown]=useState(false);
+  const [locationData,setLocationData]=useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const querySnapshot = await db
           .collection("RequestService")
-          .where("Status", "==", "pending")
+          .where("Status","==", "Pending")
           .get();
     
         if (!querySnapshot.empty) {
@@ -36,21 +37,26 @@ const Request=() => {
     fetchData();
   }, []);
 
-  const ShowMap=()=>{
+  const ShowMap=({item})=>{
+    setLoading(true);
+    console.log("Data Found",item)
+    setLocationData(item)
     setMapShown(true)
+    setLoading(false)
   }
   const handleCloseDialog=()=>{
     setMapShown(false)
   }
+  
   // Render each item in the history list
   const renderHistoryItem = ({ item }) => (
     
     <View style={styles.historyItem}>
        
-      <Text style={styles.work}>{item.myDate}</Text>
-      
-      <Text style={styles.work}>{item.Service}</Text>
- <TouchableOpacity onPress={ShowMap}>
+      <Text style={styles.work}>{item.ID_Number}</Text>
+      <Text style={{color:'black',textAlign:'center'}}>{item.email}</Text>
+      <Text style={{color:'green',textAlign:'center'}}>{item.Status}</Text>
+ <TouchableOpacity onPress={ShowMap(item)}>
 <Text style={{textAlign:'center'}} >View</Text>
    </TouchableOpacity>
     </View>
@@ -74,10 +80,11 @@ const Request=() => {
             style={styles.historyList}
           />
         )}
+        
          <ViewMap
+         data={locationData}
         visible={mapShown}
         onClose={handleCloseDialog}
-        
       />
       </View>
     </View>

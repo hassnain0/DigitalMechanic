@@ -20,7 +20,6 @@ const HomeUser = ({ navigation }) => {
   const [isDialogVisible, setDialogVisible] = useState(false);
 
   const services = ['Painter', 'Electrician', 'Flat Tire Mechanic', 'Key Maker', 'Denter', 'Auto Mechanic', 'Body-Mechanic']; // Add other services as needed
-  const [data, setData] = useState('');
   const [inputText, setInputText] = useState();
 
   const [showInput, setShowInput] = useState(false);
@@ -142,8 +141,6 @@ const HomeUser = ({ navigation }) => {
         "Specialties": ["Painter", "Denter"]
       }
       const url = "https://locationapi-i75f.onrender.com/predict";
-
-
       const response = await axios.post(url, data);
       if (response.data) {
         const data = response.data
@@ -157,7 +154,6 @@ const HomeUser = ({ navigation }) => {
         setDialogVisible(false);
         util.errorMsg("No Nearby Mechanic found");
         return false;
-
       }
 
     }
@@ -178,7 +174,6 @@ const HomeUser = ({ navigation }) => {
   }, [])
 
   const logout = () => {
-
     auth
       .signOut()
       .then(() => util.successMsg("Sucessfully Logout"));
