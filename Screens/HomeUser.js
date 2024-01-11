@@ -145,7 +145,6 @@ const HomeUser = ({ navigation }) => {
 
 
       const response = await axios.post(url, data);
-      console.log("Response", response)
       if (response.data) {
         const data = response.data
         setLoading(false);

@@ -10,7 +10,7 @@ const ProvideService= () => {
     const fetchData = async () => {
       try {
       const querySnapshot = await db
-          .collection("Registration")
+          .collection("Registration").where("Identity",'==',"Mechanic")
           .get()
          
         if (!querySnapshot.empty) {

@@ -58,11 +58,7 @@ const Request=() => {
 
   return (
     <View style={styles.container}>
-      <ViewMap
-        visible={mapShown}
-        onClose={handleCloseDialog}
-        
-      />
+     
       <Text style={styles.title}>Request for services</Text>
       <View style={styles.centeredContainer}>
         {loading ? (
@@ -70,6 +66,7 @@ const Request=() => {
         ) : historyData.length === 0 ? (
           <Text>No record found</Text>
         ) : (
+          
           <FlatList
             data={historyData}
             renderItem={renderHistoryItem}
@@ -77,6 +74,11 @@ const Request=() => {
             style={styles.historyList}
           />
         )}
+         <ViewMap
+        visible={mapShown}
+        onClose={handleCloseDialog}
+        
+      />
       </View>
     </View>
   );
