@@ -16,7 +16,7 @@ const HomeUser = ({ navigation }) => {
 
 
   const [loading, setLoading] = useState(false);
-  const [selectedServices, setSelectedServices] = useState(null);
+  const [selectedServices, setSelectedServices] = useState([null]);
   const [isDialogVisible, setDialogVisible] = useState(false);
 
   const services = ['Painter', 'Electrician', 'Flat Tire Mechanic', 'Key Maker', 'Denter', 'Auto Mechanic', 'Body-Mechanic']; // Add other services as needed
@@ -29,7 +29,8 @@ const HomeUser = ({ navigation }) => {
   }
 
   const handleConfirm = async () => {
-    if (util.errorMsg(inputText)) {
+    if (util.stringIsEmpty(inputText)) {
+      setShowInput(false)
       util.errorMsg("Please input")
       return false;
     }
@@ -39,6 +40,7 @@ const HomeUser = ({ navigation }) => {
         email:email,
         Feedback: inputText,
       }).then(() => {
+        util.successMsg("Feedback Added")
         setInputText('');
         setShowInput(false);
       })
@@ -124,6 +126,8 @@ const HomeUser = ({ navigation }) => {
 
     if (selectedServices == null) {
       setLoading(false);
+      setDialogVisible(false);
+      util.errorMsg("Please select atleast one service")
       return false;
 
     }
@@ -139,28 +143,33 @@ const HomeUser = ({ navigation }) => {
       // const latitude = location.coords.latitude;
       // const longitude = location.coords.longitude;
 
-      // console.log("Services Selected", services)
+      console.log("Services Selected", selected)
       const data = {
-        "Latitude": "24.8787702",
-        "Longitude": "66.8788",
-        "Specialties": ["Painter", "Denter"]
+        "Latitude":"24.8787702",
+        "Longitude":"66.8788",
+        "Specialties": selected,
       }
       const url = "https://locationapi-i75f.onrender.com/predict";
+     
       const response = await axios.post(url, data);
-      if (response.data) {
+      //  console.log("Respsonse",response.data)
+      if (response.data.length>0) {
         const data = response.data
         setLoading(false);
         navigation.navigate("Locations", {
           data
         })
+        
       }
+      
       else {
+
+        util.errorMsg("No Nearby Mechanic found")
         setLoading(false);
         setDialogVisible(false);
         util.errorMsg("No Nearby Mechanic found");
         return false;
       }
-
     }
     catch (error) {
       setLoading(false)
