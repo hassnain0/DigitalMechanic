@@ -9,7 +9,7 @@
       ]
     ],
     "name": "DigitalMechanic",
-    "slug": "digital-mechanic",
+    "slug": "DigitalMechanic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/Logo.png",
@@ -42,9 +42,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "6407c6b5-5dab-4a48-bf3b-a7523a089616"
+        "projectId": "99ae7fb4-3323-4658-8380-91dadf87631b"
       }
     },
-    "owner": "umar120"
+    "owner": "hassnain"
   }
 }

@@ -143,7 +143,6 @@ const HomeUser = ({ navigation }) => {
       // const latitude = location.coords.latitude;
       // const longitude = location.coords.longitude;
 
-      console.log("Services Selected", selected)
       const data = {
         "Latitude":"24.8787702",
         "Longitude":"66.8788",

@@ -30,8 +30,8 @@ const ViewMap = ({ visible, onClose, data }) => {
   const LATITUDE_DELTA = 0.9222;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   const UserLocation = {
-    latitude: 35.6762,
-    longitude: 139.6503,
+    latitude: 24.8787702,
+    longitude: 66.8788,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   };

@@ -6,11 +6,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { db } from './Firebase';
 import util from '../helpers/util';
 import Toast from 'react-native-toast-message';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import firebase from 'firebase/compat';
 import * as Location from 'expo-location';
 const Locations = () => {
 
+  const navigation=useNavigation();
   const mapRef = useRef(null)
 
   const [markerShown, setMarkerShown] = useState(false)
@@ -23,7 +24,7 @@ const Locations = () => {
   const route = useRoute();
   const data = route.params.data
   const showDetails = (marker) => {
-    console.log("markwer", marker);
+
     setMechanicList(marker)
 
     setMarkerShown((prevMarkerShown) => {
@@ -33,50 +34,58 @@ const Locations = () => {
     console.log(marker)
   }
 
-  const cancel=()=>{
+  const cancel = () => {
     setMarkerShown(false)
   }
 
-  const SendReq = async () => {
-    const email=firebase.auth().currentUser.email;
-    console.log("Email",email)
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        return;
-      }
+async  function SendReq  (item )  {
+    const email = firebase.auth().currentUser.email;
+    console.log("Email", email)
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      return;
+    }
 
-      let location = await Location.getCurrentPositionAsync({});
+    let location = await Location.getCurrentPositionAsync({});
 
-      const latitude = location.coords.latitude;
-      const longitude = location.coords.longitude;
-
-    await db.collection('RequestService').add({
-     Latitude:latitude,
-     Longitude:longitude,
-      email:email,
-      ID_Number: data.ID_Number,
-      Specialty:'Tyre Puncture',
-      Status: 'Pending',
-    }).then(() => {
-      setMarkerShown(false)
-      util.successMsg("Request Successfully Sent");
-    })
-      .catch((error) => {
-        console.error('Error updating Req:', error.message);
-      });
+    const latitude = location.coords.latitude;
+    const longitude = location.coords.longitude;
+console.log("Item",item)
+const ID_Number=item.ID_Number;
+const Speciality=item.Specialty;
+    if (item) {
+      await db.collection('RequestService').add({
+        Latitude: latitude,
+        Longitude: longitude,
+        email: email,
+        ID_Number: ID_Number,
+        Speciality: Speciality,
+        Status: 'Pending',
+      }).then(() => {
+        setMarkerShown(false)
+        util.successMsg("Request Successfully Sent");
+       
+      })
+        .catch((error) => {
+          console.error('Error updating Req:', error.message);
+        });
+    }
+    navigation.goBack();
   }
-  
+  const UserLocation = {
+    latitude: 24.8787702,
+    longitude: 66.8788,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA,
+  };
   return (
     <View style={styles.container}>
       <MapView
-
+        initialRegion={UserLocation}
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-
-        showsIndoors={true}
-
-      >
+        showsIndoors={true} >
         {data &&
           data.map((marker, index) => (
             <Marker
@@ -261,7 +270,7 @@ const Locations = () => {
                         height: "100%",
                       }}
                       color={'green'}
-                      onPress={SendReq}
+                      onPress={() => SendReq(item)}
                     />
 
                   </View>

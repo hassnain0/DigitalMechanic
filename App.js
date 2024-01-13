@@ -4,7 +4,7 @@ import HomeUser from './Screens/HomeUser';
 import HomeAdmin from './Screens/HomeAdmin';
 import HomeMechanic from './Screens/HomeMechanic';
 import Login from './Screens/Login'
-import SplashScreen from './Screens/SplashScreen'
+// import SplashScreen from './Screens/SplashScreen'
 import ForgotScreen from './Screens/ForgotScreen'
 import Locations from './Screens/Locations';
 import CheckHistory from './Screens/CheckHistory';
@@ -20,6 +20,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator >
+          {/* <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false, statusBarColor: '#3A0A6A' }} /> */}
       <Stack.Screen name='HomeUser' component={HomeUser} options={() => ({
           headerBackVisible: false, headerTitleAlign: 'center', title: 'Digital  Mechanic App', headerTitleAlign: 'center', statusBarColor: '#3A0A6A', headerTintColor: 'white', headerStyle: {
             backgroundColor: '#3A0A6A', // Set your desired header color
@@ -29,15 +30,13 @@ export default function App() {
             fontWeight: '600', fontSize: 20,
           }
         })} />
-        <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false, statusBarColor: '#3A0A6A' }} />
         <Stack.Screen name='HomeMechanic' component={HomeMechanic} options={() => ({
           headerTintColor: 'white', headerBackVisible: false, title: 'Digital Mechanic App', headerTitleAlign: 'center', statusBarColor: '#3A0A6A', headerStyle: {
             backgroundColor: '#3A0A6A',
           }, headerTitleContainerStyle: {
             top: 800,
           }, headerTitleStyle: {
-
-            fontWeight: '600', fontSize: 20,// Optionally customize the header title's style
+           fontWeight: '600', fontSize: 20,// Optionally customize the header title's style
           },
         })} />
         <Stack.Screen name='HomeAdmin' component={HomeAdmin} options={() => ({
