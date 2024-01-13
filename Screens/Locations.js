@@ -54,7 +54,7 @@ const Locations = () => {
      Latitude:latitude,
      Longitude:longitude,
       email:email,
-      ID_Number: 1234,
+      ID_Number: data.ID_Number,
       Specialty:'Tyre Puncture',
       Status: 'Pending',
     }).then(() => {
