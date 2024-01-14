@@ -22,7 +22,7 @@ const Locations = () => {
   const [MechanicList, setMechanicList] = useState('');
 
   const route = useRoute();
-  const data = route.params.data
+  const data = route.params.data ? route.params.data : null; 
   const showDetails = (marker) => {
 
     setMechanicList(marker)

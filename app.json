@@ -9,7 +9,7 @@
       ]
     ],
     "name": "DigitalMechanic",
-    "slug": "DigitalMechanic",
+    "slug": "digital-mechanic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/Logo.png",
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -35,6 +35,11 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBvEFZJ0FdugB_ttpHC61KEW8wUTIIUKTY"
+        }
+      },
       "package": "com.hassnain.DigitalMechanic"
     },
     "web": {
@@ -42,9 +47,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "99ae7fb4-3323-4658-8380-91dadf87631b"
+        "projectId": "6407c6b5-5dab-4a48-bf3b-a7523a089616"
       }
     },
-    "owner": "hassnain"
+    "owner": "umar120"
   }
 }

@@ -155,9 +155,7 @@ const HomeUser = ({ navigation }) => {
       if (response.data.length>0) {
         const data = response.data
         setLoading(false);
-        navigation.navigate("Locations", {
-          data
-        })
+       CallLocation(data);
         
       }
       
@@ -176,6 +174,11 @@ const HomeUser = ({ navigation }) => {
     }
 
   };
+  const CallLocation=(data)=>{
+    navigation.navigate("Locations", {
+      data
+    })
+  }
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
