@@ -142,7 +142,21 @@ const HomeUser = ({ navigation }) => {
 
       // const latitude = location.coords.latitude;
       // const longitude = location.coords.longitude;
+     
 
+
+     const MechanicsData=await db.collection('Registration')
+      .where("Identity", '==','Mechanic').where("Status",'==','Enabled')  // Adjust this condition based on your use case
+      MechanicsData.get().then((querySnapshot) => {
+        const documents = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+         
+         documents.push({ ...data});
+        });
+        console.log("documents",documents)
+        setLoading(false)
+      })
       const data = {
         "Latitude":"24.8787702",
         "Longitude":"66.8788",
@@ -150,23 +164,24 @@ const HomeUser = ({ navigation }) => {
       }
       const url = "https://locationapi-i75f.onrender.com/predict";
      
+
       const response = await axios.post(url, data);
       //  console.log("Respsonse",response.data)
-      if (response.data.length>0) {
-        const data = response.data
-        setLoading(false);
-       CallLocation(data);
+      // // if (response.data.length>0) {
+      // //   const data = response.data
+      // //   setLoading(false);
+      // //  CallLocation(data);
         
-      }
+      // // }
       
-      else {
+      // else {
 
-        util.errorMsg("No Nearby Mechanic found")
-        setLoading(false);
-        setDialogVisible(false);
-        util.errorMsg("No Nearby Mechanic found");
-        return false;
-      }
+      //   util.errorMsg("No Nearby Mechanic found")
+      //   setLoading(false);
+      //   setDialogVisible(false);
+      //   util.errorMsg("No Nearby Mechanic found");
+      //   return false;
+      // }
     }
     catch (error) {
       setLoading(false)

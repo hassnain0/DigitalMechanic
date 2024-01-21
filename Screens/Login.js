@@ -248,23 +248,6 @@ const SignUpMechanic=()=>{
             style={styles.RegisterView}>
             <Text style={styles.registerText}>SignUp as a Service Provider</Text>
           </TouchableOpacity>
-
-          <View style={styles.socialButtonContainer}>
-          <TouchableOpacity style={styles.socialButton}>
-            
-            <Image source={require('../assets/google.png')} style={styles.socialButtonIcon} />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.socialButton}>
-            {/* Add Facebook button icon/image here */}
-            <Image source={require('../assets/facebook.png')} style={styles.socialButtonIcon} />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.socialButton}>
-            {/* Add Instagram button icon/image here */}
-            <Image source={require('../assets/Instagram.png')} style={styles.socialButtonIcon} />
-          </TouchableOpacity>
-        </View>
         </View>
         <Toast ref={ref => Toast.setRef(ref)} />
       </SafeAreaView>
