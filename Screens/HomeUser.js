@@ -35,9 +35,9 @@ const HomeUser = ({ navigation }) => {
       return false;
     }
     try {
-  const email=firebase.auth().currentUser.email;
+      const email = firebase.auth().currentUser.email;
       await db.collection("Feedback").add({
-        email:email,
+        email: email,
         Feedback: inputText,
       }).then(() => {
         util.successMsg("Feedback Added")
@@ -142,46 +142,31 @@ const HomeUser = ({ navigation }) => {
 
       // const latitude = location.coords.latitude;
       // const longitude = location.coords.longitude;
-     
-
-
-     const MechanicsData=await db.collection('Registration')
-      .where("Identity", '==','Mechanic').where("Status",'==','Enabled')  // Adjust this condition based on your use case
+      const MechanicsData = await db.collection('Registration')
+        .where("Identity", '==', 'Mechanic').where("Status", '==', 'Enabled')  // Adjust this condition based on your use case
       MechanicsData.get().then((querySnapshot) => {
         const documents = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-         
-         documents.push({ ...data});
+
+          documents.push({ ...data });
         });
-        console.log("documents",documents)
-        setLoading(false)
+
+
+       
+        const data = {
+
+          "Latitude": 27.720978,
+          "Longitude": 68.8311916,
+          "Specialties": selected,
+          "MechanicsData": documents
+
+
+        }
+        const url = "https://locationapi-i75f.onrender.com/predict";
+        FetchData(url, data)
+
       })
-      const data = {
-        "Latitude":"24.8787702",
-        "Longitude":"66.8788",
-        "Specialties": selected,
-      }
-      const url = "https://locationapi-i75f.onrender.com/predict";
-     
-
-      const response = await axios.post(url, data);
-      //  console.log("Respsonse",response.data)
-      // // if (response.data.length>0) {
-      // //   const data = response.data
-      // //   setLoading(false);
-      // //  CallLocation(data);
-        
-      // // }
-      
-      // else {
-
-      //   util.errorMsg("No Nearby Mechanic found")
-      //   setLoading(false);
-      //   setDialogVisible(false);
-      //   util.errorMsg("No Nearby Mechanic found");
-      //   return false;
-      // }
     }
     catch (error) {
       setLoading(false)
@@ -189,7 +174,28 @@ const HomeUser = ({ navigation }) => {
     }
 
   };
-  const CallLocation=(data)=>{
+  const FetchData = async (url, data) => {
+    const response = await axios.post(url, data);
+    console.log("Respsonse", response.data)
+    if (response.data.length > 0) {
+      const data = response.data
+      setLoading(false);
+      CallLocation(data);
+
+    }
+
+    else {
+
+      util.errorMsg("No Nearby Mechanic found")
+      setLoading(false);
+      setDialogVisible(false);
+      util.errorMsg("No Nearby Mechanic found");
+      return false;
+    }
+    setLoading(false)
+
+  }
+  const CallLocation = (data) => {
     navigation.navigate("Locations", {
       data
     })

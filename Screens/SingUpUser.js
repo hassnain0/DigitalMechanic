@@ -31,7 +31,7 @@ const SignUpUser=({navigation})=> {
     password: '',
   });
   const [isConnected,setIsConnected]=React.useState(true)
-
+const [loading,setLoading]=React.useState(false);
   const _handleTextChange = (name, val) => {
     setState({
       ...state,
@@ -84,8 +84,12 @@ const SignUpUser=({navigation})=> {
     return true;
   };
   const onRegister = () => {
+    setLoading(true)
     if (!_validation()) {
-      return;
+
+      setLoading(false) 
+           return;
+
     } else{
         if(isConnected){
      createUserWithEmailAndPassword(auth,state.email,state.password).then(userCredentials=>{
@@ -96,16 +100,20 @@ const SignUpUser=({navigation})=> {
       console.log(err)
       if (err.code === 'auth/email-already-in-use') {
         util.errorMsg("Email Already in use")
+        setLoading(false)
         return false;
+        
     
       }
       if (err.code === 'auth/wrong-password') {
         util.errorMsg("Wrong Password")
+        setLoading(false)
         return false;
     
       }
       if (err.code === 'auth/invalid-email') {
     util.errorMsg("Invalid Email");
+    setLoading(false)
     return false;
       }
     });}
@@ -130,10 +138,12 @@ const SignUpUser=({navigation})=> {
         // Status:"Pending",
        }).then(()=>{
         navigation.navigate("Login") 
+        setLoading(false)
        }).catch((error)=>console.log(error))
   
    resetForm();
    util.successMsg("Successfully Registered")
+   setLoading(false)
   };
 
   const resetForm = () => {
@@ -249,7 +259,8 @@ const SignUpUser=({navigation})=> {
             <View style={styles.bottomContainer}>
               <View style={styles.buttonView}>
                 <Button
-                  btnPress={onRegister}
+                loader={loading}
+                btnPress={onRegister}
                   label={"Register"}
                 />
               </View>

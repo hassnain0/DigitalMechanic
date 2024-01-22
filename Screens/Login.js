@@ -258,7 +258,6 @@ const SignUpMechanic=()=>{
 const styles=StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: Colors.background.primary,
       },
       scrollContainer: {
         flex: 1,
@@ -269,8 +268,7 @@ const styles=StyleSheet.create({
         alignItems: "center",
         marginTop: Metrics.ratio(10),
         height: Metrics.screenHeight * 0.3,
-        // marginBottom: Metrics.ratio(10),
-        // backgroundColor: "red",
+     
       },
     
       logo: {

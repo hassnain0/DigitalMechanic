@@ -100,18 +100,18 @@ const SignUpMechanic = ({ navigation }) => {
     }
     if (phone.length !== 11) {
       setLoader(false)
-      util.errorMsg("Please enter 11 digit phone no")
+      util.errorMsg("Please enter 11 digit phone1 no")
       return false;
     }
 
     if (util.stringIsEmpty(phone2)) {
       setLoader(false)
-      util.errorMsg('Enter different Phone no');
+      util.errorMsg('Enter different Phone2 no');
       return false;
     }
     if (phone2.length !== 11) {
       setLoader(false)
-      util.errorMsg("Please enter 11 digit phone no")
+      util.errorMsg("Please enter 11 digit phone2 no")
       return false;
     }
     if (util.stringIsEmpty(cnic)) {
@@ -181,8 +181,7 @@ const SignUpMechanic = ({ navigation }) => {
 
     if (location) {
       const { latitude, longitude } = location;
-      console.log("Latitude:", latitude);
-      console.log("Longitude:", longitude);
+      
       await db.collection("Registration").add({
         Name: state.name,
         Email: state.email,

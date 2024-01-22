@@ -11,7 +11,7 @@ import firebase from 'firebase/compat';
 import * as Location from 'expo-location';
 const Locations = () => {
 
-  const navigation=useNavigation();
+  const navigation = useNavigation();
   const mapRef = useRef(null)
 
   const [markerShown, setMarkerShown] = useState(false)
@@ -22,7 +22,8 @@ const Locations = () => {
   const [MechanicList, setMechanicList] = useState('');
 
   const route = useRoute();
-  const data = route.params.data ? route.params.data : null; 
+  const data = route.params.data ? route.params.data : null;
+  console.log("Data", data)
   const showDetails = (marker) => {
 
     setMechanicList(marker)
@@ -38,7 +39,7 @@ const Locations = () => {
     setMarkerShown(false)
   }
 
-async  function SendReq  (item )  {
+  async function SendReq(item) {
     const email = firebase.auth().currentUser.email;
     console.log("Email", email)
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -50,9 +51,8 @@ async  function SendReq  (item )  {
 
     const latitude = location.coords.latitude;
     const longitude = location.coords.longitude;
-console.log("Item",item)
-const ID_Number=item.ID_Number;
-const Speciality=item.Specialty;
+    const ID_Number = item.CNIC;
+    const Speciality = item.ShopDetails;
     if (item) {
       await db.collection('RequestService').add({
         Latitude: latitude,
@@ -64,7 +64,7 @@ const Speciality=item.Specialty;
       }).then(() => {
         setMarkerShown(false)
         util.successMsg("Request Successfully Sent");
-       
+
       })
         .catch((error) => {
           console.error('Error updating Req:', error.message);
@@ -95,7 +95,7 @@ const Speciality=item.Specialty;
                 longitude: marker.Longitude,
               }}
               title={marker.Name}
-              description={`Specialty: ${marker.Specialty}`}
+              description={`Specialty: ${marker.ShopDetails}`}
 
               onPress={() => {
                 showDetails(marker);
@@ -167,7 +167,7 @@ const Speciality=item.Specialty;
                       fontWeight: "500",
 
                       textAlign: "right",
-                    }} numberOfLines={1}>{item.Specialty}</Text>
+                    }} numberOfLines={1}>{item.ShopDetails}</Text>
                   </View>
                   <View style={{
                     width: "100%",
@@ -182,14 +182,36 @@ const Speciality=item.Specialty;
                       fontWeight: "500",
 
                       textAlign: "left",
-                    }} numberOfLines={1}>Phone Number</Text>
+                    }} numberOfLines={1}>Phone Number1</Text>
                     <Text style={{
                       fontSize: 16,
                       color: '#000000',
                       fontWeight: "500",
 
                       textAlign: "right",
-                    }} numberOfLines={1}>{item.Phone_Number}</Text>
+                    }} numberOfLines={1}>{item.Phone[0]}</Text>
+                  </View>
+                  <View style={{
+                    width: "100%",
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center',
+                  }}>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "left",
+                    }} numberOfLines={1}>Phone Number2</Text>
+                    <Text style={{
+                      fontSize: 16,
+                      color: '#000000',
+                      fontWeight: "500",
+
+                      textAlign: "right",
+                    }} numberOfLines={1}>{item.Phone[1]}</Text>
                   </View>
                   <View style={{
                     width: "100%",
@@ -211,41 +233,11 @@ const Speciality=item.Specialty;
                       fontWeight: "500",
 
                       textAlign: "right",
-                    }} numberOfLines={1}>{item.ID_Number}</Text>
+                    }} numberOfLines={1}>{item.CNIC}</Text>
                   </View>
-                  <View style={{
-                    width: "100%",
-                    height: 40,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: 'center',
-                  }}>
-                    <Text style={{
-                      fontSize: 16,
-                      color: '#000000',
-                      fontWeight: "500",
 
-                      textAlign: "left",
-                    }} numberOfLines={1}>Address</Text>
-                    <Text style={{
-                      fontSize: 16,
-                      color: '#000000',
-                      fontWeight: "500",
-
-                      textAlign: "right",
-                    }} numberOfLines={1}>{item.Address}</Text>
-                  </View>
                   {/* Price */}
-                  <View style={{
-                    width: "100%",
-                    height: 40,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: 'center',
-                  }}>
-                    {/* Price */}
 
-                  </View>
 
                   <View style={{
                     width: "100%",
