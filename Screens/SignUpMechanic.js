@@ -111,7 +111,7 @@ const SignUpMechanic = ({ navigation }) => {
     }
     if (phone2.length !== 11) {
       setLoader(false)
-      util.errorMsg("Please enter 11 digit phone2 no")
+      util.errorMsg("Please enter 11 digit phone no")
       return false;
     }
     if (util.stringIsEmpty(cnic)) {

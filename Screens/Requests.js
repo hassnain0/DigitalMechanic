@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import { db } from "./Firebase";
 import ViewMap from "./ViewMap";
-
+import firebase from 'firebase/compat';
 
 const Request = () => {
   const [historyData, setHistoryData] = useState([]);
@@ -12,9 +12,19 @@ const Request = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await db
+        const email=firebase.auth().currentUser.email;
+        const querySnapshot_ID=await db.collection("Registration").where("Email",'==',email).get();
+        if (!querySnapshot_ID.empty) {
+          // Assuming there's only one document matching the query
+
+          const CNIC = querySnapshot_ID.docs[0].data().CNIC;
+        
+          // console.log("Id Number",ID_Number)
+          
+          // Now, ID_Number contains the ID of the document
+     const querySnapshot = await db
           .collection("RequestService")
-          .where("Status", "==", "Pending")
+          .where("Status", "==", "Pending").where("ID_Number","==",CNIC)
           .get();
 
         if (!querySnapshot.empty) {
@@ -26,8 +36,11 @@ const Request = () => {
 
           setHistoryData([]);
         }
-
         setLoading(false);
+      }
+      else{
+        console.log("No Document Found")
+      }
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
