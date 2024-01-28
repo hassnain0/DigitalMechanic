@@ -1,30 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import { db } from "./Firebase";
+import ViewMap from "./ViewMap";
+import firebase from 'firebase/compat';
 
-
-const Request=() => {
+const Request = () => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [mapShown, setMapShown] = useState(false);
+  const [locationData, setLocationData] = useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await db
+        const email=firebase.auth().currentUser.email;
+        const querySnapshot_ID=await db.collection("Registration").where("Email",'==',email).get();
+        if (!querySnapshot_ID.empty) {
+          // Assuming there's only one document matching the query
+
+          const CNIC = querySnapshot_ID.docs[0].data().CNIC;
+        
+          // console.log("Id Number",ID_Number)
+          
+          // Now, ID_Number contains the ID of the document
+     const querySnapshot = await db
           .collection("RequestService")
-          .where("Status", "==", "Pending")
+          .where("Status", "==", "Pending").where("ID_Number","==",CNIC)
           .get();
 
         if (!querySnapshot.empty) {
-          // If at least one matching document is found
+
           const data = querySnapshot.docs.map((doc) => doc.data());
+
           setHistoryData(data);
         } else {
-          // If no matching documents are found
+
           setHistoryData([]);
         }
-
         setLoading(false);
+      }
+      else{
+        console.log("No Document Found")
+      }
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
@@ -34,30 +50,61 @@ const Request=() => {
     fetchData();
   }, []);
 
-  // Render each item in the history list
-  const renderHistoryItem = ({ item }) => (
-    <View style={styles.historyItem}>
-      <Text style={styles.work}>{item.myDate}</Text>
-      <Text style={styles.work}>{item.Service}</Text>
-    </View>
-  );
+
+  const handleCloseDialog = () => {
+    setMapShown(false);
+  }
+  const ShowMap = (item) => {
+    
+    console.log("Item",item)
+    setLocationData(item) 
+    setMapShown(true)
+   
+    
+  }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
+
       <Text style={styles.title}>Request for services</Text>
       <View style={styles.centeredContainer}>
+     
         {loading ? (
           <Text>Loading...</Text>
         ) : historyData.length === 0 ? (
           <Text>No record found</Text>
         ) : (
-          <FlatList
-            data={historyData}
-            renderItem={renderHistoryItem}
-            keyExtractor={(item) => item.id}
-            style={styles.historyList}
-          />
+          <>
+            {historyData && historyData.length > 0 && (
+              <FlatList
+                data={historyData}
+                renderItem={({ item }) => (
+                  <View style={styles.historyItem}>
+
+                    <Text style={styles.work}>{item.ID_Number}</Text>
+                    <Text style={{ color: 'black', textAlign: 'center' }}>{item.email}</Text>
+                    <Text style={{ color: 'green', textAlign: 'center' }}>{item.Status}</Text>
+                    <TouchableOpacity onPress={()=> ShowMap(item)}>
+                      <Text style={{ textAlign: 'center' }} >View</Text>
+                    </TouchableOpacity>
+                    <ViewMap
+          data={locationData}
+          visible={mapShown}
+          onClose={handleCloseDialog}
+        />
+                  </View>
+                  
+                )}
+                keyExtractor={(item) => item.id}
+                style={styles.historyList}
+              />
+              
+            )}
+            
+          </>
         )}
+
+      
       </View>
     </View>
   );
@@ -78,16 +125,15 @@ const styles = StyleSheet.create({
   },
   centeredContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+
   },
   historyList: {
     flex: 1,
   },
   historyItem: {
     backgroundColor: "#fff",
-    padding: 16,
-    marginBottom: 10,
+    padding: 10,
+    marginBottom: 5,
     borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: {
@@ -107,6 +153,7 @@ const styles = StyleSheet.create({
   work: {
     fontSize: 16,
     color: "#333",
+    textAlign: 'center'
   },
 });
 

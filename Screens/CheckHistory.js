@@ -12,7 +12,7 @@ const CheckHistory = () => {
       try {
         const querySnapshot = await db
           .collection("RequestService")
-          .where("Status", "==", "Done")
+          .where("Status", "==", "Accepted")
           .get();
 
         if (!querySnapshot.empty) {
@@ -37,8 +37,8 @@ const CheckHistory = () => {
   // Render each item in the history list
   const renderHistoryItem = ({ item }) => (
     <View style={styles.historyItem}>
-      <Text style={styles.date}>{item.date}</Text>
-      <Text style={styles.work}>{item.work}</Text>
+      <Text style={styles.date}>{item.email}</Text>
+      <Text style={styles.work}>{item.Status}</Text>
     </View>
   );
 
