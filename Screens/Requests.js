@@ -81,7 +81,7 @@ const Request = () => {
                 renderItem={({ item }) => (
                   <View style={styles.historyItem}>
 
-                    <Text style={styles.work}>{item.ID_Number}</Text>
+                    <Text style={{ color: 'black', textAlign: 'center' }}>{item.PhoneNO}</Text>
                     <Text style={{ color: 'black', textAlign: 'center' }}>{item.email}</Text>
                     <Text style={{ color: 'green', textAlign: 'center' }}>{item.Status}</Text>
                     <TouchableOpacity onPress={()=> ShowMap(item)}>
